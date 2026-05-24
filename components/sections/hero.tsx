@@ -1,9 +1,48 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight, ArrowUpRight } from 'lucide-react'
 
+const ROLES = ['AI Engineer', 'ML Engineer', 'Backend Engineer', 'Problem Solver'] as const
+
+// Typewriter cycle: type → pause → delete → next word → repeat
+function useTypewriter(words: readonly string[], typeMs = 80, deleteMs = 45, holdMs = 1400) {
+  const [text, setText] = useState(words[0])
+  const [wordIndex, setWordIndex] = useState(0)
+  const [phase, setPhase] = useState<'holding' | 'deleting' | 'typing'>('holding')
+
+  useEffect(() => {
+    const current = words[wordIndex]
+    let t: ReturnType<typeof setTimeout>
+
+    if (phase === 'holding') {
+      t = setTimeout(() => setPhase('deleting'), holdMs)
+    } else if (phase === 'deleting') {
+      if (text.length > 0) {
+        t = setTimeout(() => setText(current.slice(0, text.length - 1)), deleteMs)
+      } else {
+        const next = (wordIndex + 1) % words.length
+        setWordIndex(next)
+        setPhase('typing')
+      }
+    } else {
+      const target = words[wordIndex]
+      if (text.length < target.length) {
+        t = setTimeout(() => setText(target.slice(0, text.length + 1)), typeMs)
+      } else {
+        setPhase('holding')
+      }
+    }
+    return () => clearTimeout(t)
+  }, [text, wordIndex, phase, words, typeMs, deleteMs, holdMs])
+
+  return text
+}
+
 export function HeroSection() {
+  const role = useTypewriter(ROLES)
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -45,6 +84,19 @@ export function HeroSection() {
             >
               Building <span className="accent-phrase">production-grade</span> ML systems, end to end.
             </motion.h1>
+
+            <motion.p
+              variants={itemVariants}
+              className="font-mono text-[15px] md:text-[16px] text-ink-muted"
+              aria-label={`Role: ${role}`}
+            >
+              <span className="text-ink-tertiary">{'> I\'m a '}</span>
+              <span className="text-accent">{role}</span>
+              <span
+                className="terminal-cursor ml-0.5 inline-block h-[1em] w-0.5 translate-y-0.5 bg-accent align-middle"
+                aria-hidden
+              />
+            </motion.p>
 
             <motion.p
               variants={itemVariants}
