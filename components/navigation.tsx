@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { openCommandPalette } from '@/components/command-palette'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 const navLinks = [
   { label: 'About', href: '#about' },
@@ -115,6 +117,16 @@ export function Navigation() {
 
           {/* Right cluster */}
           <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              type="button"
+              onClick={openCommandPalette}
+              aria-label="Open command palette"
+              className="hidden md:inline-flex items-center gap-1 rounded-md border border-hairline bg-surface-1 px-2 py-1 font-mono text-[11px] text-ink-tertiary transition-colors hover:border-accent hover:text-ink"
+            >
+              <span aria-hidden>⌘</span>
+              <span>K</span>
+            </button>
             <a
               href="https://github.com/apoorvrajdev"
               target="_blank"

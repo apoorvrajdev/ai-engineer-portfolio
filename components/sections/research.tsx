@@ -8,7 +8,7 @@ import { researchPapers } from '@/data/research'
 
 const stats = [
   { label: 'Cites in papers', value: '2' },
-  { label: 'Full-text views', value: '95' },
+  { label: 'Full-text views', value: '103' },
   { label: 'Peer-reviewed', value: 'IEEE' },
 ]
 
