@@ -75,9 +75,19 @@ export function CommandPalette() {
   const [mounted, setMounted] = useState(false)
   const [copied, setCopied] = useState(false)
   const lastFocusedRef = useRef<HTMLElement | null>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
   const { resolvedTheme, setTheme } = useTheme()
 
   useEffect(() => setMounted(true), [])
+
+  // The portal stays mounted while closed (for opacity transitions), so
+  // React's autoFocus only fires once. Re-focus the input every time the
+  // palette opens so cmdk's keyboard navigation has the right target.
+  useEffect(() => {
+    if (!open) return
+    const id = requestAnimationFrame(() => inputRef.current?.focus())
+    return () => cancelAnimationFrame(id)
+  }, [open])
 
   const close = useCallback(() => {
     setOpen(false)
@@ -88,7 +98,7 @@ export function CommandPalette() {
     setOpen(true)
   }, [])
 
-  // Keyboard triggers — listen at the document level
+  // Keyboard triggers — listen at the window level so they fire regardless of focus
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       // ⌘K / Ctrl+K toggles
@@ -97,6 +107,14 @@ export function CommandPalette() {
         setOpen((v) => {
           if (!v) lastFocusedRef.current = (document.activeElement as HTMLElement) ?? null
           return !v
+        })
+        return
+      }
+      // Escape closes (use functional updater so we don't need `open` in deps)
+      if (e.key === 'Escape') {
+        setOpen((v) => {
+          if (v) e.preventDefault()
+          return false
         })
         return
       }
@@ -187,15 +205,9 @@ export function CommandPalette() {
 
   const palette = (
     <div
-      // Backdrop — clicking it closes
+      // Backdrop — clicking it closes (Escape is handled at the window level)
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) close()
-      }}
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') {
-          e.preventDefault()
-          close()
-        }
       }}
       className={`fixed inset-0 z-[100] flex items-start justify-center px-4 pt-[20vh] transition-opacity duration-150 ${
         open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
@@ -222,6 +234,7 @@ export function CommandPalette() {
           <div className="flex items-center gap-3 border-b border-hairline px-4 py-3">
             <Search className="h-4 w-4 text-ink-tertiary" aria-hidden />
             <Command.Input
+              ref={inputRef}
               autoFocus
               aria-label="Search commands"
               placeholder="Search or jump to…"
