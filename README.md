@@ -28,7 +28,7 @@
 
 ## Status
 
-> 🟢 **Live and deploying from `main`.** The site is shipped on Vercel and rebuilds on every push. Phases 1–3 are complete: App Router scaffold, typed content schema, all home-page sections, statically-generated project case studies, ISR-driven GitHub activity, JSON-LD, dynamic OG image, the full **Linear-inspired** visual reset (near-black canvas `#010102`, lavender accent `#5e6ad2`, hairline-bordered surfaces) captured in [`DESIGN.md`](DESIGN.md), and a content truth-pass aligning every biographical claim to the verified résumé. The current surface area is **Phase 4 — Interaction Layer**: terminal hero card, global ⌘K command palette, light/dark theme toggle. Motion tuning, an accessibility audit, and Lighthouse baselines are next.
+> 🟢 **Live and deploying from `main`.** The site is shipped on Vercel and rebuilds on every push. Phases 1–4 are complete: App Router scaffold, typed content schema, all home-page sections, statically-generated project case studies, ISR-driven GitHub activity, JSON-LD, dynamic OG image, the full **Linear-inspired** visual reset (near-black canvas `#010102`, lavender accent `#5e6ad2`, hairline-bordered surfaces) captured in [`DESIGN.md`](DESIGN.md), a content truth-pass aligning every biographical claim to the verified résumé, terminal hero card, global ⌘K command palette, and light/dark theme toggle. The current surface area is **Phase 5 — Project Depth Pass**: the project section now ships **6 typed projects** (Fraud Radar · Image Captioning · Unhosted · Plant Disease · Diabetes Risk · Heart Disease) each with full `problem → dataset → architecture → training → results` case studies, a status field (`Live` / `In development` / `Pre-alpha` / `Published`) surfaced as a colored badge on every card, and three distinct project artworks. Motion tuning, an accessibility audit, and Lighthouse baselines are next.
 
 > 📐 **Why this exists.** A portfolio for an AI engineer should *look like* engineering: typed data, statically-generated routes, structured metadata, an actual design system. The site is the deliverable, but the repo is the demonstration.
 
@@ -260,7 +260,7 @@ data/skills.ts          # → Tech Stack section chips
 data/education.ts       # → defined but not mounted in app/page.tsx (wire it back if needed)
 ```
 
-Each project's `slug` becomes its URL. Current projects ship with a **header-only** case study route (title, description, stack, GitHub / demo links) — intentional, so every claim stays defensible. The `Project` schema still supports an optional `fullDetails` block (problem → dataset → architecture → training → results) which renders the deeper case study layout if you bring grounded write-ups for new entries.
+Each project's `slug` becomes its URL. Every project in `data/projects.ts` now ships with a **full case study** — title, description, stack, GitHub / demo links, an optional `status` (`Live` / `In development` / `Pre-alpha` / `Published`) rendered as a colored dot on the card, and a `fullDetails` block (`problem` → `dataset` → `architecture` → `training` → `results`) that drives the five-section deep-dive layout at `/projects/[slug]`. New entries that don't yet have a write-up can omit `fullDetails` and fall back to the header-only layout.
 
 **Three URL constants must stay in sync** when changing the canonical site URL: `app/layout.tsx` (metadataBase + OG), `app/sitemap.ts` (`SITE_URL`), and `components/structured-data.tsx` (`SITE_URL`). The OG image (`app/opengraph-image.tsx`) also bakes the URL into the artwork.
 
@@ -308,6 +308,18 @@ Each project's `slug` becomes its URL. Current projects ship with a **header-onl
 - [ ] **4F** — Bundle analysis pass; prune unused Radix primitives
 - [ ] **4G** — Optional MDX support for long-form project case studies
 
+### Phase 5 — Project Depth Pass
+
+- [x] **5A** — Expand project section from 3 → 6 entries (Fraud Radar, Image Captioning, Unhosted, Plant Disease, Diabetes Risk, Heart Disease) with READMEs as source of truth
+- [x] **5B** — Populate `fullDetails` (`problem` / `dataset` / `architecture` / `training` / `results`) for every project so `/projects/[slug]` renders a real case study, not a header-only stub
+- [x] **5C** — Add a `status` field to the `Project` schema (`Live` / `In development` / `Pre-alpha` / `Published`) surfaced as a colored dot inline with the year on each card
+- [x] **5D** — Ship distinct preview SVGs for Fraud Radar (coral risk gauge), Unhosted (lavender peer mesh), and Image Captioning (cyan image → caption scene) so the grid no longer repeats the same artwork
+- [x] **5E** — Refresh hero rotating phrases to match real project breadth: real-time fraud systems · multimodal AI pipelines · distributed LLM inference · clinical decision support · AI-native cloud platforms
+- [x] **5F** — Expand `data/skills.ts` from 7 → 8 categories with XGBoost, SHAP, SQLAlchemy 2.0, Alembic, React 19, Vite, Tailwind, TanStack Query, Streamlit, Gradio, Hugging Face Spaces, pytest, mypy strict, Ruff, Rust
+- [x] **5G** — Tighten About copy to ground Node2.io in concrete day-to-day work (FastAPI · Postgres workflows · LLM automation · CI/CD · Linux ops) and add a paragraph naming the flagship side projects
+- [x] **5H** — Drop the unsourced `Cites in papers` / `Full-text views` row from Research so the IEEE paper card stands on verifiable info alone
+- [x] **5I** — Refresh the GitHub-activity fallback list (add `fraud-radar`, `image-captioning-system`, `unhosted-core`, `plant-disease-detection`; drop stale entries)
+
 ---
 
 ## 🎨 Engineering Decisions
@@ -337,11 +349,14 @@ Each project's `slug` becomes its URL. Current projects ship with a **header-onl
 | Surface                            | Status     | Notes                                                                  |
 | ---------------------------------- | ---------- | ---------------------------------------------------------------------- |
 | Home page (9 sections)             | ✅ Live    | Hero · About · Experience · Projects · Research · Tech Stack · GitHub · Contact · Footer |
+| 6 typed projects with case studies | ✅ Live    | Fraud Radar · Image Captioning · Unhosted · Plant Disease · Diabetes Risk · Heart Disease — every entry carries `fullDetails` (problem / dataset / architecture / training / results) |
+| Project status badge               | ✅ Live    | `Live` / `In development` / `Pre-alpha` / `Published` shown as a colored dot inline with the year on each card |
+| Distinct project artwork           | ✅ Live    | Coral risk-gauge (Fraud Radar), lavender peer mesh (Unhosted), cyan image→caption scene (Image Captioning) — no repeat tiles in the grid |
 | Per-project case study routes      | ✅ Live    | Statically generated via `generateStaticParams` from `data/projects.ts` |
 | Dynamic OG image                   | ✅ Live    | `app/opengraph-image.tsx` via `next/og` `ImageResponse`                |
 | Sitemap                            | ✅ Live    | Auto-iterates typed project list                                        |
 | JSON-LD structured data            | ✅ Live    | Person · Organization · BreadcrumbList · ItemList                       |
-| GitHub Activity (ISR + fallback)   | ✅ Live    | `revalidate: 3600`, deterministic fallback list                         |
+| GitHub Activity (ISR + fallback)   | ✅ Live    | `revalidate: 3600`, deterministic fallback list (refreshed to match real repos) |
 | Light / dark theme toggle          | ✅ Live    | `next-themes` class strategy, `dark` default, no system fallback        |
 | Global command palette (⌘K)        | ✅ Live    | `cmdk` + portal, three groups, focus restored on close, Esc/arrows/Enter |
 | Terminal hero card                 | ✅ Live    | Static mono panel + CSS cursor blink — replaces former portrait card    |
