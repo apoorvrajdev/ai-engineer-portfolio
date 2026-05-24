@@ -24,13 +24,13 @@ export function HeroSection() {
 
   return (
     <section id="home" className="relative">
-      <div className="container-shell relative pt-16 pb-20 md:pt-24 md:pb-28">
+      <div className="container-shell relative pt-6 pb-12 md:pt-10 md:pb-16">
         <div className="grid items-center gap-14 md:grid-cols-[1.15fr_1fr] md:gap-16">
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="space-y-8"
+            className="space-y-5 md:space-y-6"
           >
             <motion.div variants={itemVariants} className="inline-flex items-center gap-2">
               <span className="status-pill">
@@ -41,7 +41,7 @@ export function HeroSection() {
 
             <motion.h1
               variants={itemVariants}
-              className="display-xl text-ink max-w-[20ch]"
+              className="display-xl text-ink max-w-[26ch] text-balance"
             >
               Building <span className="accent-phrase">production-grade</span> ML systems, end to end.
             </motion.h1>
@@ -57,7 +57,7 @@ export function HeroSection() {
 
             <motion.div
               variants={itemVariants}
-              className="flex flex-wrap items-center gap-3 pt-2"
+              className="flex flex-wrap items-center gap-3 pt-1"
             >
               <a
                 href="#projects"
