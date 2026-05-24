@@ -4,7 +4,12 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight, ArrowUpRight } from 'lucide-react'
 
-const ROLES = ['AI Engineer', 'ML Engineer', 'Backend Engineer', 'Problem Solver'] as const
+const BUILDS = [
+  'production-grade ML systems',
+  'AI-native cloud platforms',
+  'multimodal AI systems',
+  'LLM-driven automation',
+] as const
 
 // Typewriter cycle: type → pause → delete → next word → repeat
 function useTypewriter(words: readonly string[], typeMs = 80, deleteMs = 45, holdMs = 1400) {
@@ -41,7 +46,7 @@ function useTypewriter(words: readonly string[], typeMs = 80, deleteMs = 45, hol
 }
 
 export function HeroSection() {
-  const role = useTypewriter(ROLES)
+  const building = useTypewriter(BUILDS)
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -80,23 +85,19 @@ export function HeroSection() {
 
             <motion.h1
               variants={itemVariants}
-              className="display-xl text-ink max-w-[26ch] text-balance"
+              className="display-xl text-ink max-w-[28ch] text-balance"
+              aria-label="Building production-grade ML systems, end to end."
             >
-              Building <span className="accent-phrase">production-grade</span> ML systems, end to end.
+              Building{' '}
+              <span className="accent-phrase">
+                <span aria-hidden>{building}</span>
+                <span
+                  className="terminal-cursor ml-1 inline-block h-[0.8em] w-[0.06em] translate-y-[0.04em] bg-accent align-baseline"
+                  aria-hidden
+                />
+              </span>
+              , end to end.
             </motion.h1>
-
-            <motion.p
-              variants={itemVariants}
-              className="font-mono text-[15px] md:text-[16px] text-ink-muted"
-              aria-label={`Role: ${role}`}
-            >
-              <span className="text-ink-tertiary">{'> I\'m a '}</span>
-              <span className="text-accent">{role}</span>
-              <span
-                className="terminal-cursor ml-0.5 inline-block h-[1em] w-0.5 translate-y-0.5 bg-accent align-middle"
-                aria-hidden
-              />
-            </motion.p>
 
             <motion.p
               variants={itemVariants}
