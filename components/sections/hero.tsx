@@ -5,10 +5,11 @@ import { motion } from 'framer-motion'
 import { ArrowRight, ArrowUpRight } from 'lucide-react'
 
 const BUILDS = [
-  'production-grade ML systems',
+  'real-time fraud systems',
+  'multimodal AI pipelines',
+  'distributed LLM inference',
+  'clinical decision support',
   'AI-native cloud platforms',
-  'multimodal AI systems',
-  'LLM-driven automation',
 ] as const
 
 // Typewriter cycle: type → pause → delete → next word → repeat

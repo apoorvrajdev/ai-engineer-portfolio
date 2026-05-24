@@ -6,12 +6,6 @@ import { SectionWrapper } from '@/components/section-wrapper'
 import { SectionHeading } from '@/components/section-heading'
 import { researchPapers } from '@/data/research'
 
-const stats = [
-  { label: 'Cites in papers', value: '2' },
-  { label: 'Full-text views', value: '103' },
-  { label: 'Peer-reviewed', value: 'IEEE' },
-]
-
 export function ResearchSection() {
   return (
     <SectionWrapper id="research">
@@ -22,23 +16,7 @@ export function ResearchSection() {
         description="Published research on architectures bridging visual encoders and Transformer-based decoders — IEEE-indexed."
       />
 
-      <div className="mt-12 grid gap-3 sm:grid-cols-3">
-        {stats.map((stat, index) => (
-          <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.4, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
-            className="linear-card p-5"
-          >
-            <p className="eyebrow">{stat.label}</p>
-            <p className="mt-2 display-md text-ink">{stat.value}</p>
-          </motion.div>
-        ))}
-      </div>
-
-      <div className="mt-6 space-y-3">
+      <div className="mt-12 space-y-3">
         {researchPapers.map((paper, index) => (
           <motion.article
             key={paper.id}

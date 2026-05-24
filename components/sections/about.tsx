@@ -46,10 +46,18 @@ export function AboutSection() {
               ML evaluation, validation, and backtesting workflows.
             </p>
             <p>
-              Today I&rsquo;m the <span className="text-ink">AI Engineer at Node2.io</span>, contributing to an
-              AI-native cloud platform for intelligent property and infrastructure management — building backend
-              APIs, AI-assisted automation workflows, PostgreSQL-integrated data pipelines, and containerized
-              deployment workflows for multi-tenant production environments.
+              Today I&rsquo;m the <span className="text-ink">AI Engineer at Node2.io</span>, a Canada-based
+              AI-native cloud platform for intelligent property and infrastructure management. Day-to-day I ship
+              FastAPI services, PostgreSQL data workflows, and LLM-based automation for operational reporting and
+              documentation — alongside CI/CD pipelines, containerized deployments, and Linux-side reliability
+              work that keeps the multi-tenant production environment honest.
+            </p>
+            <p>
+              Outside Node2.io I build the same way in public. <span className="text-ink">Fraud Radar</span> is a
+              tier-1-style fraud-detection platform (FastAPI + XGBoost + SHAP, PR-AUC 0.9327, p50 3.7 ms).{' '}
+              <span className="text-ink">Unhosted</span> is a Rust runtime that pools heterogeneous hardware into
+              a single LLM inference cluster. Three live ML applications round it out — diabetes, heart-disease,
+              and 38-class plant-disease classifiers serving real users.
             </p>
           </div>
 
