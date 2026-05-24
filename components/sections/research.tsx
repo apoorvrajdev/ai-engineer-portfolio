@@ -17,9 +17,9 @@ export function ResearchSection() {
     <SectionWrapper id="research">
       <SectionHeading
         eyebrow="Research"
-        title="Vision-language models,"
+        title="Multimodal AI,"
         highlight="peer-reviewed."
-        description="Published research on architectures that bridge visual encoders and Transformer-based language decoders — IEEE-indexed."
+        description="Published research on architectures bridging visual encoders and Transformer-based decoders — IEEE-indexed."
       />
 
       <div className="mt-12 grid gap-3 sm:grid-cols-3">

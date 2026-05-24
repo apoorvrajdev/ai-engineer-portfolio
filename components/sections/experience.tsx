@@ -13,9 +13,9 @@ export function ExperienceSection() {
         <div className="md:sticky md:top-28 md:self-start">
           <SectionHeading
             eyebrow="Career"
-            title="From research labs"
-            highlight="to founding engineer."
-            description="DRDO, IIT Mandi, independent research, and the founding-engineer work at Node2 — five years of progressively deeper ML systems work."
+            title="From research to"
+            highlight="applied AI engineering."
+            description="IEEE-published research, an early ML internship, and founding-era work at Node2 — building production ML systems end to end."
           />
           <a
             href="/resume.pdf"

@@ -17,7 +17,7 @@ const checkpoints = [
   },
   {
     title: 'Research plus engineering',
-    body: 'IEEE-published; prior research at DRDO and IIT Mandi. The same depth applied to founding-engineer product work.',
+    body: 'IEEE-published in multimodal AI. The same depth applied to applied engineering work at Node2.io.',
   },
 ]
 
@@ -35,22 +35,21 @@ export function AboutSection() {
         <Reveal>
           <div className="space-y-5 body-lg text-ink-muted">
             <p>
-              I&rsquo;ve spent time on both sides of the research / engineering divide. At
-              <span className="text-ink"> DRDO</span>, I worked on hyperspectral remote-sensing models —
-              applying deep learning to geospatial imagery and improving feature-extraction
-              pipelines over baseline approaches.
+              I&rsquo;m a Computer Science graduate from <span className="text-ink">Chandigarh University</span> (2024)
+              with <span className="text-ink">IEEE-published</span> research in multimodal AI. My paper —
+              <em> AI Narratives: Bridging Visual Content and Linguistic Expression</em> — combines an
+              InceptionV3 CNN encoder with a Transformer-based decoder for image captioning, trained on COCO.
             </p>
             <p>
-              At <span className="text-ink">IIT Mandi</span>, I built automated EEG preprocessing pipelines that
-              scaled to 70,000+ samples per day, unblocking the lab&rsquo;s experimental throughput. The vision-language
-              work that came out of that period became my <span className="text-ink">IEEE-published</span> paper
-              on AI narrative generation — InceptionV3 plus a Transformer decoder for scene-aware captioning.
+              Before Node2.io, I interned as an <span className="text-ink">ML Engineer at Quicksilver Technologies</span>
+              in 2023, where I built Python-based automation scripts and reusable data processing pipelines for
+              ML evaluation, validation, and backtesting workflows.
             </p>
             <p>
-              Today I&rsquo;m the Founding AI Engineer at <span className="text-ink">Node2</span>, architecting
-              the AI stack for intelligent-infrastructure systems — predictive maintenance, energy
-              optimization, real-time IoT pipelines, containerized deployment. Pilots running with
-              stakeholders in Canada and the UAE.
+              Today I&rsquo;m the <span className="text-ink">AI Engineer at Node2.io</span>, contributing to an
+              AI-native cloud platform for intelligent property and infrastructure management — building backend
+              APIs, AI-assisted automation workflows, PostgreSQL-integrated data pipelines, and containerized
+              deployment workflows for multi-tenant production environments.
             </p>
           </div>
 

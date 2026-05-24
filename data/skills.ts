@@ -5,35 +5,31 @@ export interface SkillCategory {
 
 export const skills: SkillCategory[] = [
   {
-    category: 'Programming',
-    skills: ['Python', 'JavaScript', 'SQL']
+    category: 'Programming & Data',
+    skills: ['Python', 'SQL', 'Pandas', 'NumPy'],
   },
   {
-    category: 'Machine Learning',
-    skills: ['Scikit-Learn', 'PyTorch', 'TensorFlow', 'Predictive Modeling', 'NLP']
+    category: 'Machine Learning & AI',
+    skills: ['PyTorch', 'TensorFlow', 'Scikit-learn', 'Predictive Modeling', 'NLP', 'Generative AI'],
   },
   {
     category: 'Backend & APIs',
-    skills: ['REST APIs', 'JSON', 'API Development', 'Postman']
+    skills: ['REST APIs', 'FastAPI', 'Pydantic'],
   },
   {
-    category: 'Web Frameworks',
-    skills: ['Next.js', 'Streamlit']
+    category: 'Data Processing',
+    skills: ['Data Preprocessing', 'Feature Engineering', 'Model Evaluation'],
   },
   {
-    category: 'Databases',
-    skills: ['PostgreSQL', 'Supabase']
+    category: 'DevOps & Deployment',
+    skills: ['CI/CD Pipelines', 'Docker', 'Podman', 'Vercel'],
   },
   {
-    category: 'DevOps & Tools',
-    skills: ['Linux', 'CI/CD', 'Podman', 'GitHub']
+    category: 'Tools & Platforms',
+    skills: ['Git', 'GitHub', 'Linux', 'PostgreSQL', 'AWS', 'Postman'],
   },
   {
-    category: 'Cloud',
-    skills: ['AWS (basic concepts)', 'Cloud Deployment']
+    category: 'Software Engineering',
+    skills: ['OOP', 'SDLC', 'Agile/Scrum', 'Unit Testing', 'Debugging'],
   },
-  {
-    category: 'Systems',
-    skills: ['Windows', 'Linux']
-  }
 ]

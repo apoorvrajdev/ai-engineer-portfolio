@@ -50,9 +50,9 @@ export function HeroSection() {
               variants={itemVariants}
               className="subhead max-w-[58ch]"
             >
-              I&apos;m Apoorv Raj — Founding AI Engineer at Node2, IEEE-published on vision-language
-              models, with prior research time at DRDO and IIT Mandi. I work the full ML stack:
-              model architecture, training pipelines, deployment, and the interface in front of it.
+              I&apos;m Apoorv Raj — AI Engineer at Node2.io, IEEE-published on multimodal
+              vision-language models. I work the full ML stack: model development, data pipelines,
+              REST APIs, and CI/CD-integrated deployment.
             </motion.p>
 
             <motion.div
@@ -83,11 +83,11 @@ export function HeroSection() {
             >
               <span className="inline-flex items-center gap-2">
                 <span className="h-1 w-1 rounded-full bg-ink-tertiary" />
-                Founding AI Engineer · Node2
+                AI Engineer · Node2.io
               </span>
               <span className="inline-flex items-center gap-2">
                 <span className="h-1 w-1 rounded-full bg-ink-tertiary" />
-                Bengaluru, India
+                India · Remote
               </span>
             </motion.div>
           </motion.div>

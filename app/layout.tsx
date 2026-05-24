@@ -16,24 +16,24 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://ai-engineer-portfolio-pi.vercel.app'),
-  title: 'Apoorv Raj | AI Engineer Portfolio',
+  title: 'Apoorv Raj — AI Engineer',
   description:
-    'Apoorv Raj — AI Engineer building scalable AI systems for real-world impact. Machine learning, computer vision, NLP, and production-grade software engineering.',
-  keywords: 'AI Engineer, Machine Learning, Deep Learning, Computer Vision, NLP, Researcher, Full-Stack Developer, PyTorch, TensorFlow',
+    'AI Engineer at Node2.io. IEEE-published on multimodal AI. Building production-grade ML systems end to end.',
+  keywords: 'AI Engineer, Machine Learning, Multimodal AI, PyTorch, TensorFlow, FastAPI, Node2',
   authors: [{ name: 'Apoorv Raj' }],
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: 'https://ai-engineer-portfolio-pi.vercel.app',
-    title: 'Apoorv Raj | AI Engineer',
-    description: 'Building scalable AI systems for real-world impact.',
+    title: 'Apoorv Raj — AI Engineer',
+    description: 'AI Engineer at Node2.io. IEEE-published on multimodal AI. Building production-grade ML systems end to end.',
     siteName: 'Apoorv Raj',
     images: ['/opengraph-image'],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Apoorv Raj | AI Engineer',
-    description: 'Building scalable AI systems for real-world impact.',
+    title: 'Apoorv Raj — AI Engineer',
+    description: 'AI Engineer at Node2.io. IEEE-published on multimodal AI. Building production-grade ML systems end to end.',
     images: ['/opengraph-image'],
   },
   icons: {

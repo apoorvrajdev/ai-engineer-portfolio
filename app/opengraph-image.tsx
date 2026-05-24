@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og'
 
-export const alt = 'Apoorv Raj — AI Engineer | Building Scalable AI Systems for Real-World Impact'
+export const alt = 'Apoorv Raj — AI Engineer at Node2.io · IEEE-published on multimodal AI'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -72,7 +72,7 @@ export default function OpengraphImage() {
               maxWidth: '900px',
             }}
           >
-            AI Engineer · Building Scalable AI Systems for Real-World Impact
+            AI Engineer at Node2.io · IEEE-published on multimodal AI
           </div>
         </div>
 
@@ -86,7 +86,7 @@ export default function OpengraphImage() {
             fontFamily: 'monospace',
           }}
         >
-          <span>ML · Computer Vision · NLP · Full-Stack</span>
+          <span>Python · PyTorch · TensorFlow · FastAPI · CI/CD</span>
           <span style={{ color: '#7aa2ff' }}>ai-engineer-portfolio-pi.vercel.app</span>
         </div>
       </div>

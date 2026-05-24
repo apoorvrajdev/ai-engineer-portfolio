@@ -17,7 +17,7 @@ export function StructuredData() {
     jobTitle: 'AI Engineer',
     affiliation: {
       '@type': 'Organization',
-      name: 'Defense Research and Development Organisation (DRDO)',
+      name: 'Node2.io',
     },
     knowsAbout: [
       'Machine Learning',
