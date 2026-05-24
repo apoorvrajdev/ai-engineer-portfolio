@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Onest, JetBrains_Mono } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
 import { StructuredData } from '@/components/structured-data'
+import { CommandPalette } from '@/components/command-palette'
 import './globals.css'
 
 const onest = Onest({
@@ -68,6 +69,7 @@ export default function RootLayout({
       <body className={`${onest.variable} ${jetbrainsMono.variable} font-sans antialiased bg-canvas text-ink`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} storageKey="theme-preference">
           {children}
+          <CommandPalette />
         </ThemeProvider>
       </body>
     </html>

@@ -92,30 +92,51 @@ export function HeroSection() {
             </motion.div>
           </motion.div>
 
-          {/* Portrait panel — surface-1 with hairline; minimal chrome */}
+          {/* Terminal card — replaces former portrait. Static visual; palette opens via ⌘K / Ctrl+K / ? */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="relative md:justify-self-end w-full max-w-md"
+            aria-hidden
           >
             <div className="linear-card overflow-hidden">
-              <div className="relative aspect-4/5 overflow-hidden bg-surface-2">
-                {/* eslint-disable-next-line @next/next/no-img-element -- image optimization disabled in next.config */}
-                <img
-                  src="/profile.jpg"
-                  alt="Apoorv Raj portrait"
-                  className="h-full w-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none'
-                  }}
-                />
+              {/* Header: traffic-light dots + path */}
+              <div className="flex items-center justify-between border-b border-hairline px-4 py-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-full bg-hairline-strong" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-hairline-strong" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-hairline-strong" />
+                </div>
+                <span className="mono text-ink-tertiary">~/apoorv-raj</span>
               </div>
-              <div className="hairline-t px-5 py-3 flex items-center justify-between">
-                <span className="mono text-ink-subtle">apoorv-raj</span>
-                <span className="status-pill">
-                  <span className="dot" />
-                  online
+
+              {/* Body: terminal lines */}
+              <div className="font-mono px-5 py-5 text-[13px] leading-[1.65] space-y-0.5">
+                <p className="text-ink-tertiary">$ whoami</p>
+                <p className="text-ink">ai engineer · node2.io</p>
+                <p className="text-ink-tertiary pt-2">$ stack</p>
+                <p className="text-ink">python · tensorflow · pytorch · fastapi</p>
+                <p className="text-ink-tertiary pt-2">$ status</p>
+                <p className="text-accent">open to opportunities</p>
+                <p className="pt-3 text-ink-tertiary">$ help</p>
+                <p className="text-ink">
+                  press <span className="text-accent">⌘K</span> (Mac) /{' '}
+                  <span className="text-accent">Ctrl+K</span> (Win/Linux) /{' '}
+                  <span className="text-accent">?</span>
+                </p>
+                <p className="pt-1 flex items-center text-ink-tertiary">
+                  <span>$ </span>
+                  <span className="ml-1 inline-block h-3.5 w-1.75 bg-accent terminal-cursor" />
+                </p>
+              </div>
+
+              {/* Footer */}
+              <div className="border-t border-hairline px-4 py-2.5 flex items-center justify-between">
+                <span className="mono text-ink-tertiary">interactive</span>
+                <span className="inline-flex items-center gap-1.5 mono text-ink-subtle">
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                  live
                 </span>
               </div>
             </div>
