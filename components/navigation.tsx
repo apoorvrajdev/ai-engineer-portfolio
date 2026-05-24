@@ -1,49 +1,33 @@
-﻿'use client'
+'use client'
 
 import { useEffect, useState } from 'react'
-import { useTheme } from 'next-themes'
-import { Moon, Sun } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navLinks = [
   { label: 'About', href: '#about' },
+  { label: 'Work', href: '#projects' },
   { label: 'Experience', href: '#experience' },
-  { label: 'Projects', href: '#projects' },
   { label: 'Research', href: '#research' },
-  { label: 'Skills', href: '#tech-stack' },
-  { label: 'Open Source', href: '#open-source' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Open source', href: '#open-source' },
 ]
 
 export function Navigation() {
-  const { theme, setTheme } = useTheme()
   const [isOpen, setIsOpen] = useState(false)
+  const [activeHash, setActiveHash] = useState('#home')
   const [scrolled, setScrolled] = useState(false)
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
-  const [activeHash, setActiveHash] = useState('')
-  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration guard for next-themes; theme cannot be read during SSR
-    setMounted(true)
-  }, [])
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  // Track active section via IntersectionObserver
-  useEffect(() => {
-    const ids = navLinks.map((l) => l.href.replace('#', ''))
+    const ids = ['home', ...navLinks.map((l) => l.href.replace('#', '')), 'contact']
     const observers: IntersectionObserver[] = []
     ids.forEach((id) => {
       const el = document.getElementById(id)
       if (!el) return
       const obs = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) setActiveHash(`#${id}`) },
-        { threshold: 0.3 }
+        ([entry]) => {
+          if (entry.isIntersecting) setActiveHash(`#${id}`)
+        },
+        { threshold: 0.3 },
       )
       obs.observe(el)
       observers.push(obs)
@@ -51,8 +35,21 @@ export function Navigation() {
     return () => observers.forEach((o) => o.disconnect())
   }, [])
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   const handleNavScroll = (href: string) => {
     const elementId = href.replace('#', '')
+    if (elementId === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      setActiveHash(href)
+      setIsOpen(false)
+      return
+    }
     const target = document.getElementById(elementId)
     if (!target) return
     target.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -63,160 +60,128 @@ export function Navigation() {
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
+        'sticky top-0 z-50 w-full transition-colors duration-200',
         scrolled
-          ? 'border-b border-border/50 bg-background/80 backdrop-blur-xl shadow-sm'
-          : 'bg-transparent',
+          ? 'bg-canvas/85 backdrop-blur-xl border-b border-hairline'
+          : 'bg-transparent border-b border-transparent',
       )}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-4">
-        <nav className="flex items-center justify-between">
-          {/* Logo */}
+      <div className="container-shell">
+        <nav className="flex h-14 items-center justify-between">
+          {/* Wordmark */}
           <a
-            href="#"
-            onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
-            className="group flex items-center gap-3"
+            href="#home"
+            onClick={(e) => {
+              e.preventDefault()
+              handleNavScroll('#home')
+            }}
+            aria-label="Home"
+            className="group inline-flex items-center gap-2.5"
           >
-            <div className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-primary/50 bg-primary/10 font-mono text-sm text-primary transition-all duration-300 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-primary/25">
-              <span>AR</span>
-            </div>
+            <span className="relative flex h-6 w-6 items-center justify-center">
+              <span
+                className="absolute inset-0 rounded-md"
+                style={{ background: 'var(--accent)' }}
+                aria-hidden
+              />
+              <span className="relative font-mono text-[11px] font-semibold text-white">AR</span>
+            </span>
+            <span className="text-[14px] font-medium tracking-tight text-ink">
+              Apoorv Raj
+            </span>
           </a>
 
-          {/* Desktop nav */}
-          <div className="hidden items-center gap-1 md:flex">
-            {navLinks.map((link, index) => {
+          {/* Center links — desktop */}
+          <div className="hidden md:flex items-center gap-1">
+            {navLinks.map((link) => {
               const isActive = activeHash === link.href
               return (
                 <button
                   key={link.label}
                   type="button"
                   onClick={() => handleNavScroll(link.href)}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
                   className={cn(
-                    'relative px-4 py-2.5 font-mono text-xs uppercase tracking-widest transition-all duration-300 rounded-lg',
+                    'px-3 py-1.5 text-[13.5px] font-medium rounded-md transition-colors duration-150',
                     isActive
-                      ? 'text-primary'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50',
-                    hoveredIndex === index && !isActive && 'text-foreground',
+                      ? 'text-ink'
+                      : 'text-ink-subtle hover:text-ink',
                   )}
                 >
-                  {/* > indicator */}
-                  <span
-                    className={cn(
-                      'absolute left-1.5 text-primary transition-all duration-200',
-                      isActive
-                        ? 'opacity-100 translate-x-0'
-                        : hoveredIndex === index
-                        ? 'opacity-100 translate-x-0'
-                        : 'opacity-0 -translate-x-2',
-                    )}
-                  >
-                    {'>'}
-                  </span>
-                  <span
-                    className={cn(
-                      'transition-transform duration-200',
-                      (hoveredIndex === index || isActive) && 'translate-x-2',
-                    )}
-                  >
-                    {link.label}
-                  </span>
-                  {/* Bottom underline indicator */}
-                  <span
-                    className={cn(
-                      'absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 bg-primary rounded-full transition-all duration-300',
-                      isActive ? 'w-6' : hoveredIndex === index ? 'w-6' : 'w-0',
-                    )}
-                  />
+                  {link.label}
                 </button>
               )
             })}
           </div>
 
-          {/* Right side controls */}
-          <div className="flex items-center gap-3">
-            {/* Status pill */}
-            <div className="hidden items-center gap-2.5 font-mono text-xs text-muted-foreground sm:flex px-3 py-1.5 rounded-full bg-secondary/50 border border-border/50">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
-              </span>
-              <span>available</span>
-            </div>
+          {/* Right cluster */}
+          <div className="flex items-center gap-2">
+            <a
+              href="https://github.com/apoorvrajdev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:inline-flex btn-tertiary"
+            >
+              GitHub
+            </a>
+            <a
+              href="#contact"
+              onClick={(e) => {
+                e.preventDefault()
+                handleNavScroll('#contact')
+              }}
+              className="hidden sm:inline-flex btn-primary"
+            >
+              Get in touch
+            </a>
 
-            {/* Theme toggle */}
-            {mounted ? (
-              <button
-                type="button"
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card/50 text-muted-foreground transition-all duration-300 hover:border-primary/50 hover:text-primary hover:bg-primary/10"
-                aria-label="Toggle color theme"
-              >
-                {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              </button>
-            ) : null}
-
-            {/* Mobile hamburger */}
             <button
               type="button"
-              onClick={() => setIsOpen(!isOpen)}
-              className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-card/50 md:hidden transition-colors hover:bg-secondary"
+              onClick={() => setIsOpen((v) => !v)}
+              className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-md border border-hairline bg-surface-1 text-ink hover:bg-surface-2"
               aria-label="Toggle menu"
+              aria-expanded={isOpen}
             >
-              <div className="flex flex-col gap-1.5 w-5">
-                <span
-                  className={cn(
-                    'h-0.5 bg-foreground transition-all duration-300 origin-center',
-                    isOpen ? 'w-5 translate-y-2 rotate-45' : 'w-5',
-                  )}
-                />
-                <span
-                  className={cn(
-                    'h-0.5 w-3.5 bg-foreground transition-all duration-300',
-                    isOpen && 'opacity-0 translate-x-2',
-                  )}
-                />
-                <span
-                  className={cn(
-                    'h-0.5 bg-foreground transition-all duration-300 origin-center',
-                    isOpen ? 'w-5 -translate-y-2 -rotate-45' : 'w-5',
-                  )}
-                />
-              </div>
+              {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </button>
           </div>
         </nav>
+      </div>
 
-        {/* Mobile menu */}
-        <div
-          className={cn(
-            'overflow-hidden transition-all duration-400 md:hidden bg-background',
-            isOpen ? 'max-h-96 opacity-100 pt-4' : 'max-h-0 opacity-0',
-          )}
-        >
-          <div className="flex flex-col gap-1 border-t border-border/50 pt-4">
-            {navLinks.map((link, index) => (
-              <button
-                key={link.label}
-                type="button"
-                onClick={() => handleNavScroll(link.href)}
-                className="flex items-center gap-3 rounded-lg px-4 py-3.5 font-mono text-sm uppercase tracking-widest text-muted-foreground transition-all duration-200 hover:text-foreground hover:bg-secondary/50"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <span className="text-primary">{'>'}</span>
-                {link.label}
-              </button>
-            ))}
-
-            {/* Mobile status */}
-            <div className="mt-4 flex items-center gap-2 border-t border-border/50 pt-4 px-4">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
-              </span>
-              <span className="font-mono text-xs text-muted-foreground">status: available</span>
-            </div>
+      {/* Mobile menu */}
+      <div
+        className={cn(
+          'md:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out border-t border-hairline',
+          isOpen ? 'max-h-105 opacity-100' : 'max-h-0 opacity-0 border-0',
+        )}
+      >
+        <div className="container-shell py-3">
+          <div className="flex flex-col">
+            {navLinks.map((link) => {
+              const isActive = activeHash === link.href
+              return (
+                <button
+                  key={link.label}
+                  type="button"
+                  onClick={() => handleNavScroll(link.href)}
+                  className={cn(
+                    'rounded-md px-3 py-2.5 text-left text-[14px] font-medium transition-colors',
+                    isActive ? 'bg-surface-1 text-ink' : 'text-ink-subtle hover:bg-surface-1 hover:text-ink',
+                  )}
+                >
+                  {link.label}
+                </button>
+              )
+            })}
+            <a
+              href="#contact"
+              onClick={(e) => {
+                e.preventDefault()
+                handleNavScroll('#contact')
+              }}
+              className="mt-2 btn-primary w-full"
+            >
+              Get in touch
+            </a>
           </div>
         </div>
       </div>

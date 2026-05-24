@@ -1,8 +1,9 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { ArrowUpRight, Github, Linkedin, Mail } from 'lucide-react'
 import { SectionWrapper } from '@/components/section-wrapper'
-import { Code2, ExternalLink, Mail, Network } from 'lucide-react'
+import { SectionHeading } from '@/components/section-heading'
 
 const socialLinks = [
   {
@@ -15,101 +16,94 @@ const socialLinks = [
     label: 'LinkedIn',
     handle: '/in/apoorv-raj-1a35ba218',
     href: 'https://www.linkedin.com/in/apoorv-raj-1a35ba218/',
-    icon: Network,
+    icon: Linkedin,
   },
   {
     label: 'GitHub',
     handle: 'github.com/apoorvrajdev',
     href: 'https://github.com/apoorvrajdev',
-    icon: Code2,
+    icon: Github,
   },
-]
+] as const
 
 export function ContactSection() {
   return (
     <SectionWrapper id="contact">
-      <div className="grid gap-12 sm:gap-16 lg:grid-cols-2">
-        {/* Left — CTA text */}
+      <SectionHeading
+        eyebrow="Contact"
+        title="Building something"
+        highlight="serious?"
+        description="Open to elite AI engineering roles, founding-engineer work, and research collaboration. If the system has to ship under real load — let&rsquo;s talk."
+      />
+
+      <div className="mt-12 grid items-stretch gap-3 md:grid-cols-[1.2fr_1fr]">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-          className="space-y-6 sm:space-y-8"
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="linear-card-featured flex flex-col justify-between gap-8 p-7 md:p-8"
         >
-          <div className="space-y-3">
-            <p className="font-mono text-xs uppercase tracking-[0.25em] sm:tracking-[0.35em] text-primary">Contact</p>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl text-balance">
-              {"Let's build something "}
-              <span className="text-gradient">intelligent</span>
-            </h2>
+          <div>
+            <p className="eyebrow text-accent">Direct line</p>
+            <h3 className="mt-3 display-md text-ink text-balance">Email is the fastest channel.</h3>
+            <p className="mt-4 body-lg text-ink-muted max-w-md">
+              Architecture, data, deployment — describe the system. The more specific, the easier it is to tell you whether I&rsquo;m the right engineer for it.
+            </p>
           </div>
-
-          <p className="max-w-md text-base sm:text-lg text-muted-foreground leading-relaxed">
-            Open to collaborations, research opportunities, and ambitious AI
-            engineering projects. If you’re building something that matters, let’s
-            talk architecture, implementation, and launch strategy.
-          </p>
-
-          <div className="pt-2">
+          <div className="flex flex-wrap items-center gap-3">
+            <a href="mailto:apoorvrajmgr@gmail.com" className="btn-primary btn-primary-lg">
+              <Mail className="h-4 w-4" />
+              apoorvrajmgr@gmail.com
+            </a>
             <a
-              href="mailto:apoorvrajmgr@gmail.com"
-              className="group relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-xl border border-primary bg-primary/10 px-8 py-4 font-mono text-sm text-primary transition-all duration-500 hover:text-primary-foreground active:scale-[0.98] w-full sm:w-auto"
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-secondary btn-secondary-lg"
             >
-              <span className="relative z-10">Send a Message</span>
-              <span className="relative z-10 transition-transform duration-300 group-hover:translate-x-1">→</span>
-              <span className="absolute inset-0 -translate-x-full bg-primary transition-transform duration-500 group-hover:translate-x-0" />
+              Resume
+              <ArrowUpRight className="h-4 w-4" />
             </a>
           </div>
         </motion.div>
 
-        {/* Right — social links */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.6, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
-          className="space-y-4"
+          transition={{ duration: 0.4, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
+          className="flex flex-col gap-px overflow-hidden rounded-xl border border-hairline bg-hairline"
         >
-          <p className="font-mono text-xs uppercase tracking-[0.25em] sm:tracking-[0.35em] text-muted-foreground">
-            Find me elsewhere
-          </p>
-          <div className="space-y-2">
-            {socialLinks.map((link, index) => {
-              const Icon = link.icon
-              return (
-                <motion.a
-                  key={link.label}
-                  href={link.href}
-                  target={link.href.startsWith('http') ? '_blank' : undefined}
-                  rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: 0.2 + index * 0.08, ease: [0.4, 0, 0.2, 1] }}
-                  className="group flex items-center justify-between gap-4 rounded-xl border border-transparent p-4 transition-all duration-300 hover:border-border/50 hover:bg-card/50 glass hover-lift active:bg-secondary/30"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border/60 bg-secondary/50 transition-all duration-300 group-hover:border-primary/40 group-hover:bg-primary/10">
-                      <Icon className="h-4 w-4 text-muted-foreground transition-all duration-300 group-hover:text-primary" />
-                    </div>
-                    <span className="font-mono text-sm font-medium transition-colors group-hover:text-gradient">
-                      {link.label}
-                    </span>
+          {socialLinks.map((link, index) => {
+            const Icon = link.icon
+            return (
+              <motion.a
+                key={link.label}
+                href={link.href}
+                target={link.href.startsWith('http') ? '_blank' : undefined}
+                rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                initial={{ opacity: 0, x: 10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.1 + index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+                className="group flex flex-1 items-center justify-between gap-4 bg-surface-1 px-6 py-5 transition-colors hover:bg-surface-2"
+              >
+                <div className="flex items-center gap-4">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-md border border-hairline bg-surface-2 text-ink-muted group-hover:text-ink group-hover:border-hairline-strong">
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <p className="body-default text-ink font-medium">{link.label}</p>
+                    <p className="mono text-ink-subtle">{link.handle}</p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs text-muted-foreground truncate">{link.handle}</span>
-                    {link.href.startsWith('http') && (
-                      <ExternalLink className="h-3 w-3 text-muted-foreground/50 opacity-0 transition-all duration-300 group-hover:opacity-100" />
-                    )}
-                  </div>
-                </motion.a>
-              )
-            })}
-          </div>
+                </div>
+                <ArrowUpRight className="h-4 w-4 text-ink-tertiary transition-colors group-hover:text-ink" />
+              </motion.a>
+            )
+          })}
         </motion.div>
       </div>
     </SectionWrapper>
   )
 }
-

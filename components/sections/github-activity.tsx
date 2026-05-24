@@ -48,8 +48,10 @@ export async function GithubActivitySection() {
     <SectionWrapper id="open-source">
       <SectionHeading
         eyebrow="Open Source"
-        title="Open Source Activity"
-        description="GitHub profile, contribution activity, latest repositories, and commit activity visualization."
+        title="What I push to"
+        highlight="GitHub"
+        highlightColor="black"
+        description="Profile, contribution activity, and the latest repositories I'm actively working on."
       />
       <GithubActivityClient
         githubProfile={`https://github.com/${GITHUB_USER}`}

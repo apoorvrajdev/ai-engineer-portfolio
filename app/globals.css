@@ -3,82 +3,111 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ────────────────────────────────────────────────────────────────────
+   Linear design system — dark-first, single lavender accent,
+   surface ladder + hairline borders. No drop shadows on dark.
+   ──────────────────────────────────────────────────────────────────── */
+
 :root {
-  --cursor-x: 50vw;
-  --cursor-y: 50vh;
-  --background: oklch(0.985 0.002 95);
-  --foreground: oklch(0.17 0.01 257);
-  --card: oklch(0.995 0.001 95);
-  --card-foreground: oklch(0.17 0.01 257);
-  --popover: oklch(0.995 0.001 95);
-  --popover-foreground: oklch(0.17 0.01 257);
-  --primary: oklch(0.54 0.13 254);
-  --primary-foreground: oklch(0.98 0.002 95);
-  --secondary: oklch(0.95 0.004 255);
-  --secondary-foreground: oklch(0.24 0.01 257);
-  --muted: oklch(0.94 0.004 255);
-  --muted-foreground: oklch(0.5 0.015 257);
-  --accent: oklch(0.58 0.15 219);
-  --accent-foreground: oklch(0.98 0.002 95);
-  --destructive: oklch(0.63 0.21 27);
-  --destructive-foreground: oklch(0.98 0.002 95);
-  --border: oklch(0.9 0.004 257);
-  --input: oklch(0.9 0.004 257);
-  --ring: oklch(0.56 0.13 254);
-  --chart-1: oklch(0.5 0.15 260);
-  --chart-2: oklch(0.6 0.2 35);
-  --chart-3: oklch(0.7 0.15 120);
-  --chart-4: oklch(0.45 0.1 180);
-  --chart-5: oklch(0.55 0.12 320);
-  --radius: 1rem;
-  --sidebar: oklch(0.985 0.002 95);
-  --sidebar-foreground: oklch(0.17 0.01 257);
-  --sidebar-primary: oklch(0.54 0.13 254);
-  --sidebar-primary-foreground: oklch(0.98 0.002 95);
-  --sidebar-accent: oklch(0.58 0.15 219);
-  --sidebar-accent-foreground: oklch(0.98 0.002 95);
-  --sidebar-border: oklch(0.9 0.004 257);
-  --sidebar-ring: oklch(0.56 0.13 254);
+  /* Dark canvas (Linear's reference values) */
+  --canvas: #010102;
+  --surface-1: #0f1011;
+  --surface-2: #141516;
+  --surface-3: #18191a;
+  --surface-4: #1c1d1e;
+
+  --hairline: #23252a;
+  --hairline-strong: #34343a;
+  --hairline-tertiary: #3e3e44;
+
+  --ink: #f7f8f8;
+  --ink-muted: #d0d6e0;
+  --ink-subtle: #8a8f98;
+  --ink-tertiary: #62666d;
+
+  /* Single chromatic accent — Linear lavender-blue */
+  --accent: #5e6ad2;
+  --accent-hover: #828fff;
+  --accent-focus: #5e69d1;
+  --accent-soft: rgba(94, 106, 210, 0.12);
+
+  --success: #27a644;
+
+  /* Shadcn-compat token aliases mapped onto Linear tokens */
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --card: var(--surface-1);
+  --card-foreground: var(--ink);
+  --popover: var(--surface-2);
+  --popover-foreground: var(--ink);
+  --primary: var(--accent);
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface-1);
+  --secondary-foreground: var(--ink);
+  --muted: var(--surface-1);
+  --muted-foreground: var(--ink-subtle);
+  --destructive: #f04438;
+  --destructive-foreground: #ffffff;
+  --border: var(--hairline);
+  --input: var(--surface-1);
+  --ring: var(--accent-focus);
+  --radius: 0.75rem; /* 12px — Linear's card radius */
+
+  /* Legacy highlight tokens kept as semantic aliases so any leftover
+     references in MDX/content compile. All map onto the accent or
+     subtle text shades — no multi-color decoration. */
+  --hl-coral: var(--accent);
+  --hl-blue: var(--accent);
+  --hl-indigo: var(--accent);
+  --hl-yellow: var(--ink-muted);
+  --hl-mint: var(--success);
 }
 
-.dark {
-  --background: oklch(0.14 0.01 257);
-  --foreground: oklch(0.94 0.003 95);
-  --card: oklch(0.2 0.01 257);
-  --card-foreground: oklch(0.94 0.003 95);
-  --popover: oklch(0.2 0.01 257);
-  --popover-foreground: oklch(0.94 0.003 95);
-  --primary: oklch(0.75 0.13 254);
-  --primary-foreground: oklch(0.17 0.01 257);
-  --secondary: oklch(0.26 0.008 257);
-  --secondary-foreground: oklch(0.94 0.003 95);
-  --muted: oklch(0.26 0.008 257);
-  --muted-foreground: oklch(0.72 0.01 257);
-  --accent: oklch(0.76 0.13 219);
-  --accent-foreground: oklch(0.17 0.01 257);
-  --destructive: oklch(0.62 0.2 27);
-  --destructive-foreground: oklch(0.94 0.003 95);
-  --border: oklch(0.3 0.007 257);
-  --input: oklch(0.3 0.007 257);
-  --ring: oklch(0.75 0.13 254);
-  --chart-1: oklch(0.75 0.13 254);
-  --chart-2: oklch(0.65 0.15 260);
-  --chart-3: oklch(0.6 0.15 120);
-  --chart-4: oklch(0.65 0.15 180);
-  --chart-5: oklch(0.7 0.15 320);
-  --sidebar: oklch(0.14 0.01 257);
-  --sidebar-foreground: oklch(0.94 0.003 95);
-  --sidebar-primary: oklch(0.75 0.13 254);
-  --sidebar-primary-foreground: oklch(0.17 0.01 257);
-  --sidebar-accent: oklch(0.76 0.13 219);
-  --sidebar-accent-foreground: oklch(0.17 0.01 257);
-  --sidebar-border: oklch(0.3 0.007 257);
-  --sidebar-ring: oklch(0.75 0.13 254);
+/* Light theme (kept for the toggle; same Linear language inverted) */
+.light {
+  --canvas: #ffffff;
+  --surface-1: #fafafa;
+  --surface-2: #f4f5f5;
+  --surface-3: #ececec;
+  --surface-4: #e4e4e4;
+
+  --hairline: #e6e7e9;
+  --hairline-strong: #d4d6d9;
+  --hairline-tertiary: #c0c2c6;
+
+  --ink: #0a0a0a;
+  --ink-muted: #2c2e33;
+  --ink-subtle: #5f6168;
+  --ink-tertiary: #8a8f98;
+
+  --accent: #5e6ad2;
+  --accent-hover: #4f5cc3;
+  --accent-focus: #5e69d1;
+  --accent-soft: rgba(94, 106, 210, 0.10);
+
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --card: var(--surface-1);
+  --card-foreground: var(--ink);
+  --popover: var(--surface-2);
+  --popover-foreground: var(--ink);
+  --primary: var(--accent);
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface-1);
+  --secondary-foreground: var(--ink);
+  --muted: var(--surface-1);
+  --muted-foreground: var(--ink-subtle);
+  --destructive: #d92d20;
+  --destructive-foreground: #ffffff;
+  --border: var(--hairline);
+  --input: var(--surface-1);
+  --ring: var(--accent-focus);
 }
 
 @theme inline {
-  --font-sans: var(--font-manrope), 'Avenir Next', 'Segoe UI', sans-serif;
-  --font-mono: var(--font-space-grotesk), 'Menlo', monospace;
+  --font-sans: var(--font-onest), 'Inter', 'SF Pro Display', system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), 'JetBrains Mono', 'SF Mono', 'Menlo', monospace;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -92,49 +121,66 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-foreground: #ffffff;
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-canvas: var(--canvas);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-surface-4: var(--surface-4);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-hairline-tertiary: var(--hairline-tertiary);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
+  --color-ink-tertiary: var(--ink-tertiary);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-focus: var(--accent-focus);
+  --color-success: var(--success);
+
+  /* Legacy hl-* tokens (all alias to accent now) */
+  --color-hl-coral: var(--accent);
+  --color-hl-blue: var(--accent);
+  --color-hl-indigo: var(--accent);
+  --color-hl-yellow: var(--ink-muted);
+  --color-hl-mint: var(--success);
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
-  }
-
-  * {
-    @apply border-border outline-ring/50;
+    background: var(--canvas);
+    color: var(--ink);
   }
 
   body {
-    @apply bg-background text-foreground transition-[background-color,color,border-color] duration-500;
-    background-image:
-      radial-gradient(circle at 20% 15%, oklch(0.74 0.06 245 / 0.08), transparent 28%),
-      radial-gradient(circle at 80% 6%, oklch(0.72 0.08 210 / 0.1), transparent 34%);
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv11', 'ss01', 'ss03';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
+  /* Linear-style display typography — aggressive negative tracking */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+    color: var(--ink);
+    font-weight: 600;
+    letter-spacing: -0.022em;
+    line-height: 1.15;
   }
 
   section {
@@ -142,97 +188,374 @@
   }
 
   ::selection {
-    @apply bg-primary/20 text-foreground;
+    background: var(--accent-soft);
+    color: var(--ink);
+  }
+
+  /* Sleek scrollbar so the canvas stays quiet */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--canvas); }
+  ::-webkit-scrollbar-thumb {
+    background: var(--surface-3);
+    border-radius: 999px;
+    border: 2px solid var(--canvas);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--hairline-tertiary); }
+
+  /* Focus ring — accent at 50% on a 2px outline */
+  :focus-visible {
+    outline: 2px solid var(--accent-focus);
+    outline-offset: 2px;
+    border-radius: 4px;
   }
 }
 
 @layer components {
-  .cursor-spotlight {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    background: radial-gradient(
-      500px circle at var(--cursor-x) var(--cursor-y),
-      rgba(56, 189, 248, 0.15),
-      transparent 40%
-    );
-  }
-
+  /* ── Layout ──────────────────────────────────────────────────────── */
   .container-shell {
-    @apply mx-auto w-full max-w-6xl px-5 sm:px-8 lg:px-10;
+    @apply mx-auto w-full px-6 sm:px-8 lg:px-10;
+    max-width: 1200px;
   }
 
   .section-spacing {
-    @apply py-20 sm:py-28;
+    @apply py-20 md:py-24;
   }
 
-  /* Heavy card — kept for stat cards/highlights */
-  .glassmorphism {
-    @apply rounded-xl border border-border/60 bg-card/70 backdrop-blur-xl;
-    box-shadow: 0 16px 50px oklch(0.2 0.02 257 / 0.06);
+  /* ── Typography utilities ────────────────────────────────────────── */
+  .display-xl {
+    font-size: clamp(2.25rem, 4.6vw + 1rem, 4.5rem);
+    font-weight: 600;
+    line-height: 1.06;
+    letter-spacing: -0.032em;
+  }
+  .display-lg {
+    font-size: clamp(2rem, 3.5vw + 1rem, 3.5rem);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.028em;
+  }
+  .display-md {
+    font-size: clamp(1.625rem, 2vw + 1rem, 2.5rem);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.022em;
+  }
+  .headline {
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.018em;
+  }
+  .card-title {
+    font-size: 1.375rem;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.014em;
+  }
+  .subhead {
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.55;
+    letter-spacing: -0.008em;
+    color: var(--ink-muted);
+  }
+  .body-lg {
+    font-size: 1.0625rem;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: -0.006em;
+  }
+  .body-default {
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: -0.003em;
+  }
+  .body-sm {
+    font-size: 0.8125rem;
+    font-weight: 400;
+    line-height: 1.55;
+  }
+  .caption {
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--ink-subtle);
+  }
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-subtle);
+    font-family: var(--font-mono);
+  }
+  .mono {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 400;
+    line-height: 1.5;
   }
 
-  /* Lighter card — matches template glass pattern */
-  .glass {
-    @apply rounded-xl border border-border bg-card/40 backdrop-blur-sm;
+  /* Linear's signature accent on a key phrase: text-color only, never a block fill */
+  .accent-phrase {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  /* Backward-compat: any leftover .highlight-* spans now render as inline accent text */
+  .highlight,
+  .highlight-coral,
+  .highlight-blue,
+  .highlight-indigo,
+  .highlight-yellow,
+  .highlight-black {
+    display: inline;
+    background: transparent;
+    color: var(--accent);
+    padding: 0;
+    line-height: inherit;
+    font-weight: 600;
   }
 
-  /* Card hover lift — matches template hover-lift */
+  /* ── Surfaces & cards ────────────────────────────────────────────── */
+  .surface-1 { background: var(--surface-1); }
+  .surface-2 { background: var(--surface-2); }
+  .hairline { border: 1px solid var(--hairline); }
+  .hairline-b { border-bottom: 1px solid var(--hairline); }
+  .hairline-t { border-top: 1px solid var(--hairline); }
+
+  /* Linear card: surface-1 panel with a hairline border + a faint top-edge highlight
+     for the "pixel rendered" feel from the spec */
+  .linear-card {
+    position: relative;
+    background: var(--surface-1);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    transition: background-color 200ms ease, border-color 200ms ease, transform 200ms ease;
+  }
+  .linear-card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(255, 255, 255, 0.06) 50%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+  .light .linear-card::before { background: transparent; }
+
+  .linear-card-hover:hover {
+    background: var(--surface-2);
+    border-color: var(--hairline-strong);
+  }
+
+  /* A featured / lifted card sits on surface-2 by default */
+  .linear-card-featured {
+    background: var(--surface-2);
+    border: 1px solid var(--hairline-strong);
+    border-radius: 12px;
+  }
+
+  /* ── Legacy brutal-* utilities, restyled to Linear language for any
+       remaining references we haven't migrated yet ───────────────────── */
+  .brutal-card {
+    background: var(--surface-1);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    color: var(--ink);
+    transition: background-color 200ms ease, border-color 200ms ease;
+  }
+  .brutal-shadow,
+  .brutal-shadow-sm,
+  .brutal-shadow-lg {
+    box-shadow: none;
+  }
   .hover-lift {
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 200ms ease, background-color 200ms ease, border-color 200ms ease;
   }
   .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 48px oklch(0.2 0.02 257 / 0.12);
+    transform: translateY(-2px);
+    background: var(--surface-2);
+    border-color: var(--hairline-strong);
   }
 
-  .gradient-text {
-    @apply bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent;
+  /* ── Buttons ─────────────────────────────────────────────────────── */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.875rem;
+    height: 36px;
+    background: var(--accent);
+    color: #ffffff;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.875rem;
+    letter-spacing: -0.002em;
+    border-radius: 8px;
+    border: 1px solid var(--accent);
+    transition: background-color 150ms ease, border-color 150ms ease, transform 80ms ease;
+    cursor: pointer;
+  }
+  .btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .btn-primary:active { background: var(--accent-focus); transform: translateY(0.5px); }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.875rem;
+    height: 36px;
+    background: var(--surface-1);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.875rem;
+    letter-spacing: -0.002em;
+    border-radius: 8px;
+    border: 1px solid var(--hairline);
+    transition: background-color 150ms ease, border-color 150ms ease;
+    cursor: pointer;
+  }
+  .btn-secondary:hover { background: var(--surface-2); border-color: var(--hairline-strong); }
+
+  .btn-tertiary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.875rem;
+    height: 36px;
+    background: transparent;
+    color: var(--ink-muted);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.875rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: color 150ms ease, background-color 150ms ease;
+    cursor: pointer;
+  }
+  .btn-tertiary:hover { color: var(--ink); background: var(--surface-1); }
+
+  /* Larger CTA variants (hero / closing CTA) */
+  .btn-primary-lg {
+    height: 44px;
+    padding: 0 1.125rem;
+    font-size: 0.9375rem;
+  }
+  .btn-secondary-lg {
+    height: 44px;
+    padding: 0 1.125rem;
+    font-size: 0.9375rem;
   }
 
-  /* Template-style gradient: from right-to-left (matches template's from-primary/50 to-accent) */
-  .text-gradient {
-    @apply bg-gradient-to-l from-primary/50 to-accent bg-clip-text text-transparent;
+  /* Legacy brutalist button class names → Linear primary / secondary (raw CSS so @apply doesn't depend on custom utilities) */
+  .btn-brutal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 44px;
+    padding: 0 1.125rem;
+    background: var(--accent);
+    color: #ffffff;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.9375rem;
+    letter-spacing: -0.002em;
+    border-radius: 8px;
+    border: 1px solid var(--accent);
+    transition: background-color 150ms ease, border-color 150ms ease;
+    cursor: pointer;
+  }
+  .btn-brutal:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+  .btn-brutal:active { background: var(--accent-focus); }
+
+  .btn-brutal-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 44px;
+    padding: 0 1.125rem;
+    background: var(--surface-1);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.9375rem;
+    letter-spacing: -0.002em;
+    border-radius: 8px;
+    border: 1px solid var(--hairline);
+    transition: background-color 150ms ease, border-color 150ms ease;
+    cursor: pointer;
+  }
+  .btn-brutal-outline:hover { background: var(--surface-2); border-color: var(--hairline-strong); }
+
+  /* ── Tags & status pills ─────────────────────────────────────────── */
+  .pill-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    background: var(--surface-2);
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+    border-radius: 999px;
+    border: 1px solid var(--hairline);
+  }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 2px 10px;
+    background: var(--surface-2);
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 999px;
+    border: 1px solid var(--hairline);
+  }
+  .status-pill .dot {
+    width: 6px; height: 6px; border-radius: 999px;
+    background: var(--success);
   }
 
-  .smooth-scroll {
-    scroll-behavior: smooth;
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    background: var(--surface-1);
+    color: var(--ink-muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 6px;
+    border: 1px solid var(--hairline);
+    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+  }
+  .chip:hover {
+    background: var(--surface-2);
+    border-color: var(--hairline-strong);
+    color: var(--ink);
   }
 
-  .animated-gradient {
-    background: linear-gradient(120deg, oklch(0.78 0.09 245 / 0.25), oklch(0.75 0.1 215 / 0.22), oklch(0.78 0.09 245 / 0.25));
-    background-size: 220% 220%;
-    animation: gradient-shift 20s ease-in-out infinite;
-  }
-
-  .hero-gradient-drift {
-    background:
-      radial-gradient(circle at 18% 26%, oklch(0.78 0.09 218 / 0.2), transparent 42%),
-      radial-gradient(circle at 82% 34%, oklch(0.74 0.1 246 / 0.18), transparent 46%);
-    background-size: 180% 180%;
-    animation: gradient-shift 22s ease-in-out infinite;
-  }
-
-  @keyframes gradient-shift {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-
-  button, a, input, textarea, select {
-    @apply transition-all duration-[180ms] ease-[cubic-bezier(0.4,0,0.2,1)];
-  }
-
-  /* ── Keyframe animations (matches template) ── */
+  /* ── Motion (kept minimal) ───────────────────────────────────────── */
   @keyframes fade-in-up {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
   }
   @keyframes fade-in {
@@ -240,48 +563,41 @@
     to   { opacity: 1; }
   }
   @keyframes scale-in {
-    from { opacity: 0; transform: scale(0.95); }
+    from { opacity: 0; transform: scale(0.98); }
     to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes blink {
+    0%, 49%   { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+  @keyframes marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
   @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50%       { transform: translateY(-8px); }
-  }
-  @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 0 0 oklch(0.54 0.13 254 / 0.4); }
-    50%       { box-shadow: 0 0 0 6px oklch(0.54 0.13 254 / 0); }
-  }
-  @keyframes shimmer {
-    0%   { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  }
-  @keyframes blink {
-    0%, 49% { opacity: 1; }
-    50%, 100% { opacity: 0; }
+    50%      { transform: translateY(-4px); }
   }
 
-  .animate-fade-in-up  { animation: fade-in-up 0.5s cubic-bezier(0.4,0,0.2,1) both; }
-  .animate-fade-in     { animation: fade-in    0.5s cubic-bezier(0.4,0,0.2,1) both; }
-  .animate-scale-in    { animation: scale-in   0.5s cubic-bezier(0.4,0,0.2,1) both; }
-  .animate-float       { animation: float 3s ease-in-out infinite; }
-  .animate-pulse-glow  { animation: pulse-glow 2s ease-in-out infinite; }
-  .animate-shimmer     { animation: shimmer 2s linear infinite; }
+  .animate-fade-in-up { animation: fade-in-up 0.5s cubic-bezier(0.4,0,0.2,1) both; }
+  .animate-fade-in    { animation: fade-in    0.5s cubic-bezier(0.4,0,0.2,1) both; }
+  .animate-scale-in   { animation: scale-in   0.5s cubic-bezier(0.4,0,0.2,1) both; }
+  .animate-marquee    { animation: marquee 30s linear infinite; }
+  .animate-float      { animation: float 3s ease-in-out infinite; }
 
-  /* Stagger delays */
-  .stagger-1 { animation-delay: 0.1s; }
-  .stagger-2 { animation-delay: 0.2s; }
-  .stagger-3 { animation-delay: 0.3s; }
-  .stagger-4 { animation-delay: 0.4s; }
-  .stagger-5 { animation-delay: 0.5s; }
-  .stagger-6 { animation-delay: 0.6s; }
+  .stagger-1 { animation-delay: 0.06s; }
+  .stagger-2 { animation-delay: 0.12s; }
+  .stagger-3 { animation-delay: 0.18s; }
+  .stagger-4 { animation-delay: 0.24s; }
+  .stagger-5 { animation-delay: 0.30s; }
+  .stagger-6 { animation-delay: 0.36s; }
 
-  /* Typing cursor (for hero heading cycling text) */
   .typing-cursor::after {
     content: '|';
     animation: blink 1s step-end infinite;
-    color: oklch(0.54 0.13 254);
+    color: var(--accent);
   }
-  .dark .typing-cursor::after {
-    color: oklch(0.75 0.13 254);
-  }
+
+  /* (Removed: ambient-accent radial wash + grid-overlay.
+      Linear avoids atmospheric gradients and decorative grids on marketing chrome.) */
 }

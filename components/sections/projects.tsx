@@ -6,17 +6,18 @@ import { projects } from '@/data/projects'
 import { SectionHeading } from '@/components/section-heading'
 
 export function ProjectsSection() {
-  const featuredProjects = projects.filter(p => p.featured)
+  const featuredProjects = projects.filter((p) => p.featured)
 
   return (
     <SectionWrapper id="projects">
       <SectionHeading
-        eyebrow="Selected Work"
-        title="Projects"
-        description="Each project emphasizes measurable model performance, clean implementation, and developer-quality UX."
+        eyebrow="Selected work"
+        title="ML and full-stack systems,"
+        highlight="shipped end to end."
+        description="Each project carries the problem, the architecture decision, the stack, and the measurable outcome — not just the screenshot."
       />
 
-      <div className="mt-10 sm:mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {featuredProjects.map((project, index) => (
           <ProjectCard key={project.id} project={project} index={index} />
         ))}

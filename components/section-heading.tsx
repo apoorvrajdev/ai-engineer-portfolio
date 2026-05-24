@@ -1,21 +1,49 @@
+import { cn } from '@/lib/utils'
+
+type HighlightColor = 'coral' | 'blue' | 'indigo' | 'yellow' | 'black'
+
 interface SectionHeadingProps {
   eyebrow?: string
+  /** Plain leading title text. */
   title: string
+  /** Phrase emphasized with the lavender accent color. */
+  highlight?: string
+  /** Kept for API compatibility — Linear uses a single accent so this is ignored. */
+  highlightColor?: HighlightColor
   description?: string
   align?: 'left' | 'center'
+  /** Kept for API compatibility — both modes render on the dark canvas. */
+  invert?: boolean
 }
 
-export function SectionHeading({ eyebrow, title, description, align = 'left' }: Readonly<SectionHeadingProps>) {
-  const alignment = align === 'center' ? 'text-center mx-auto' : 'text-left'
+export function SectionHeading({
+  eyebrow,
+  title,
+  highlight,
+  description,
+  align = 'left',
+}: Readonly<SectionHeadingProps>) {
+  const alignment = align === 'center' ? 'text-center mx-auto items-center' : 'text-left'
 
   return (
-    <div className={`max-w-3xl space-y-3 ${alignment}`}>
+    <div className={cn('flex max-w-2xl flex-col gap-4', alignment)}>
       {eyebrow ? (
-        <p className="font-mono text-xs uppercase tracking-[0.25em] sm:tracking-[0.35em] text-primary">{eyebrow}</p>
+        <div className="inline-flex items-center gap-2">
+          <span className="h-px w-6 bg-hairline-strong" aria-hidden />
+          <p className="eyebrow text-accent">{eyebrow}</p>
+        </div>
       ) : null}
-      <h2 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">{title}</h2>
+      <h2 className="display-md text-ink text-balance">
+        {title}
+        {highlight ? (
+          <>
+            {' '}
+            <span className="accent-phrase">{highlight}</span>
+          </>
+        ) : null}
+      </h2>
       {description ? (
-        <p className="text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">{description}</p>
+        <p className="body-lg text-ink-subtle text-pretty">{description}</p>
       ) : null}
     </div>
   )

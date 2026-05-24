@@ -1,18 +1,17 @@
 import type { Metadata } from 'next'
-import { Manrope, Space_Grotesk } from 'next/font/google'
+import { Onest, JetBrains_Mono } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
-import { CursorSpotlight } from '@/components/cursor-spotlight'
 import { StructuredData } from '@/components/structured-data'
 import './globals.css'
 
-const manrope = Manrope({
+const onest = Onest({
   subsets: ['latin'],
-  variable: '--font-manrope',
+  variable: '--font-onest',
 })
 
-const spaceGrotesk = Space_Grotesk({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
-  variable: '--font-space-grotesk',
+  variable: '--font-jetbrains-mono',
 })
 
 export const metadata: Metadata = {
@@ -66,10 +65,9 @@ export default function RootLayout({
       <head>
         <StructuredData />
       </head>
-      <body className={`${manrope.variable} ${spaceGrotesk.variable} relative font-sans antialiased bg-background text-foreground`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="theme-preference">
-          <CursorSpotlight />
-          <div className="relative">{children}</div>
+      <body className={`${onest.variable} ${jetbrainsMono.variable} font-sans antialiased bg-canvas text-ink`}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} storageKey="theme-preference">
+          {children}
         </ThemeProvider>
       </body>
     </html>
