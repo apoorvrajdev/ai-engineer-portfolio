@@ -28,7 +28,7 @@
 
 ## Status
 
-> 🟢 **Live and deploying from `main`.** The site is shipped on Vercel and rebuilds on every push. Phase 1 (App Router scaffold, theming, content schema) and Phase 2 (full neo-brutalist visual language, all sections, project case study pages, GitHub Activity ISR, sitemap, JSON-LD, OG image generator) are both complete. The codebase recently absorbed a **Linear-inspired design overhaul** — near-black canvas (`#010102`), lavender-blue accent (`#5e6ad2`), measured negative tracking on display type, hairline-bordered charcoal cards — captured as a typed spec in [`DESIGN.md`](DESIGN.md). Phase 3 (interaction polish, motion tuning, deeper case study templates) is the active surface area; the intent is to keep the site evolving in public, with honest commits.
+> 🟢 **Live and deploying from `main`.** The site is shipped on Vercel and rebuilds on every push. Phases 1–3 are complete: App Router scaffold, typed content schema, all home-page sections, statically-generated project case studies, ISR-driven GitHub activity, JSON-LD, dynamic OG image, the full **Linear-inspired** visual reset (near-black canvas `#010102`, lavender accent `#5e6ad2`, hairline-bordered surfaces) captured in [`DESIGN.md`](DESIGN.md), and a content truth-pass aligning every biographical claim to the verified résumé. The current surface area is **Phase 4 — Interaction Layer**: terminal hero card, global ⌘K command palette, light/dark theme toggle. Motion tuning, an accessibility audit, and Lighthouse baselines are next.
 
 > 📐 **Why this exists.** A portfolio for an AI engineer should *look like* engineering: typed data, statically-generated routes, structured metadata, an actual design system. The site is the deliverable, but the repo is the demonstration.
 
@@ -36,11 +36,11 @@
 
 ## 🎯 What Is This Project?
 
-This is a portfolio site for **Apoorv Raj** — Founding AI Engineer at Node2, IEEE-published on vision-language models, with prior research time at DRDO and IIT Mandi. It is the public-facing surface for the work: shipped products, research papers, conference posters, the open-source surface, and the projects that don't fit neatly into any of those buckets.
+This is a portfolio site for **Apoorv Raj** — AI Engineer at Node2.io, IEEE-published on multimodal AI (CNN + Transformer image captioning on COCO). It is the public-facing surface for the work: shipped products, the IEEE paper, an early ML internship, and the projects that don't fit neatly into any of those buckets.
 
 It is **not** a template fork dressed up with new copy, and it is **not** a CMS-backed site. It is a hand-built Next.js 16 App Router application where every section is a typed React component, every project is a typed entry in `data/projects.ts`, and every page that gets indexed by search engines is statically pre-rendered with its own metadata, OG image, and JSON-LD structured data.
 
-The design system is its own piece of work. The site has been through two complete visual languages — first a Paperfolio neo-brutalist palette (thick black borders, hard offset shadows, solid highlight spans), and now a Linear-inspired dark canvas with lavender as the single chromatic accent. Both languages are captured in committed specs so the decisions are auditable, not vibes.
+The design system is its own piece of work. The site went through one full visual reset — from an early neo-brutalist palette to a Linear-inspired dark canvas with lavender as the single chromatic accent. Tokens, typography scale, and motion vocabulary are committed as a typed spec in [`DESIGN.md`](DESIGN.md) so the decisions are auditable, not vibes.
 
 ---
 
@@ -67,6 +67,9 @@ This project is the answer to both:
 - **shadcn/ui** primitives (new-york style, lucide icons) composed via `cn()` from a tiny `clsx + tailwind-merge` helper.
 - **Theming** via `next-themes` with a class-based dark mode and a typed `ThemeProvider` wrapper.
 - **Motion as a system** — a reusable `Reveal` scroll-trigger, `PageTransition` route wrapper, and shared `staggerContainer / revealItem` variants — not a pile of one-off `motion.div` props.
+- **Global command palette** built on `cmdk` — ⌘K / Ctrl+K / `?` opens it from anywhere, Esc closes, arrow keys navigate, Enter activates. Three groups (Navigate · Links · Actions), substring filter, focus restored to the previously focused element on close, body scroll locked while open. Accessible via `role="dialog"`, `aria-modal`, and `aria-label`.
+- **Light / dark theme toggle** wired through `next-themes` — explicit user choice (no `enableSystem`), persisted via `localStorage`, available both as a nav button (Sun ⇄ Moon) and as a palette action.
+- **Terminal hero card** — a static, monospaced "terminal" panel that surfaces role, stack, status, and the ⌘K hint. Pure CSS cursor blink, no JS animation loops.
 - **Structured data + dynamic OG image** rendered via `next/og` `ImageResponse`, baked at the edge.
 - **Auto-generated sitemap** that iterates the typed project list, so it never drifts from the routes that actually exist.
 - **Conventional Commits** with a strict no-AI-attribution authoring policy enforced in [`CLAUDE.md`](CLAUDE.md).
@@ -140,9 +143,10 @@ Page → Section → Reveal-wrapped card grid → Themed primitive
 | ------------------ | --------------------------------------------------------------------------------------------- |
 | **Framework**      | Next.js 16 (App Router, RSC), React 19, TypeScript 5.7 strict                                 |
 | **Styling**        | Tailwind CSS v4 (CSS-first config), PostCSS, tw-animate-css                                   |
-| **UI primitives**  | shadcn/ui (new-york style), Radix UI, lucide-react icons                                      |
+| **UI primitives**  | shadcn/ui (new-york style), Radix UI, lucide-react icons, `cmdk` command menu                 |
 | **Motion**         | framer-motion 11, react-intersection-observer                                                 |
-| **Theming**        | next-themes (class strategy, light default, system fallback)                                  |
+| **Theming**        | next-themes (class strategy, `dark` default, explicit toggle — no system fallback)            |
+| **UX affordances** | Global command palette (⌘K), light/dark toggle, scroll-progress bar, smooth-scroll navigation |
 | **Forms / state**  | react-hook-form + zod + @hookform/resolvers, sonner toasts                                    |
 | **Fonts**          | Onest + JetBrains Mono via `next/font/google`                                                 |
 | **SEO**            | `next/og` dynamic OG image, JSON-LD structured data, auto sitemap                             |
@@ -167,7 +171,7 @@ ai-engineer-portfolio/
 │       └── project-page-client.tsx       # Interactive client half (framer-motion, scroll)
 ├── components/
 │   ├── sections/                         # One file per home-page section
-│   │   ├── hero.tsx                      # Headline + primary CTAs + status pill
+│   │   ├── hero.tsx                      # Headline + primary CTAs + status pill + terminal card
 │   │   ├── about.tsx
 │   │   ├── experience.tsx
 │   │   ├── projects.tsx
@@ -180,7 +184,9 @@ ai-engineer-portfolio/
 │   ├── motion/
 │   │   ├── reveal.tsx                    # Scroll-triggered fade-up (the one motion primitive)
 │   │   └── page-transition.tsx           # Route-change wrapper
-│   ├── navigation.tsx                    # Floating pill nav · IntersectionObserver active state
+│   ├── navigation.tsx                    # Top nav · IntersectionObserver active state · ⌘K hint · theme toggle
+│   ├── command-palette.tsx               # Global ⌘K palette (cmdk + portal) — Navigate · Links · Actions
+│   ├── theme-toggle.tsx                  # Sun ⇄ Moon button wired through next-themes
 │   ├── section-wrapper.tsx               # Standard section frame + Reveal + dark variant
 │   ├── section-heading.tsx               # Eyebrow + title + highlight span + description
 │   ├── project-card.tsx                  # Category-tinted card → /projects/[slug]
@@ -254,7 +260,7 @@ data/skills.ts          # → Tech Stack section chips
 data/education.ts       # → defined but not mounted in app/page.tsx (wire it back if needed)
 ```
 
-Each project's `slug` becomes its URL. Adding a project with a `fullDetails` block triggers the per-project case study layout (problem → dataset → architecture → training → results). Without `fullDetails`, the detail page renders just the header.
+Each project's `slug` becomes its URL. Current projects ship with a **header-only** case study route (title, description, stack, GitHub / demo links) — intentional, so every claim stays defensible. The `Project` schema still supports an optional `fullDetails` block (problem → dataset → architecture → training → results) which renders the deeper case study layout if you bring grounded write-ups for new entries.
 
 **Three URL constants must stay in sync** when changing the canonical site URL: `app/layout.tsx` (metadataBase + OG), `app/sitemap.ts` (`SITE_URL`), and `components/structured-data.tsx` (`SITE_URL`). The OG image (`app/opengraph-image.tsx`) also bakes the URL into the artwork.
 
@@ -288,16 +294,19 @@ Each project's `slug` becomes its URL. Adding a project with a `fullDetails` blo
 - [x] **3B** — Token migration in `globals.css` (CSS custom properties for ink, surface, hairline, accent)
 - [x] **3C** — Hero and Navigation reworked to the new visual language
 - [x] **3D** — Section primitives updated (`section-wrapper`, `section-heading`, `project-card`)
-- [ ] **3E** — Per-project case study template polish (typography rhythm, screenshot framing)
+- [x] **3E** — Content truth-pass: every biographical claim aligned to the verified résumé
 - [ ] **3F** — Motion tuning pass (easing curves, stagger timings, hover affordances)
 - [ ] **3G** — Accessibility audit (contrast against new dark surface, focus rings on lavender)
 
-### Phase 4 — Performance + Tooling
+### Phase 4 — Interaction Layer
 
-- [ ] **4A** — Lighthouse + Core Web Vitals baseline captured and committed
-- [ ] **4B** — Image optimization revisit (current `images.unoptimized: true` is a deliberate trade-off)
-- [ ] **4C** — Bundle analysis pass; remove unused Radix primitives
-- [ ] **4D** — Optional MDX support for long-form project case studies
+- [x] **4A** — Terminal hero card replaces the static portrait (mono prompts, CSS cursor blink)
+- [x] **4B** — Global command palette: ⌘K / Ctrl+K / `?` open, Esc close, arrow keys navigate, Enter activates
+- [x] **4C** — Light / dark theme toggle in nav + as a palette action; persisted via `next-themes`
+- [x] **4D** — CSP hardening with a dev-only `unsafe-eval` carve-out for React 19 callstack reconstruction
+- [ ] **4E** — Lighthouse + Core Web Vitals baseline captured and committed
+- [ ] **4F** — Bundle analysis pass; prune unused Radix primitives
+- [ ] **4G** — Optional MDX support for long-form project case studies
 
 ---
 
@@ -333,9 +342,13 @@ Each project's `slug` becomes its URL. Adding a project with a `fullDetails` blo
 | Sitemap                            | ✅ Live    | Auto-iterates typed project list                                        |
 | JSON-LD structured data            | ✅ Live    | Person · Organization · BreadcrumbList · ItemList                       |
 | GitHub Activity (ISR + fallback)   | ✅ Live    | `revalidate: 3600`, deterministic fallback list                         |
-| Dark mode                          | ✅ Live    | `next-themes`, class strategy, system fallback                          |
-| Lighthouse baseline                | ⏳ Planned | Phase 4A — capture and commit alongside redesign                        |
-| Bundle analysis                    | ⏳ Planned | Phase 4C — prune unused Radix primitives                                |
+| Light / dark theme toggle          | ✅ Live    | `next-themes` class strategy, `dark` default, no system fallback        |
+| Global command palette (⌘K)        | ✅ Live    | `cmdk` + portal, three groups, focus restored on close, Esc/arrows/Enter |
+| Terminal hero card                 | ✅ Live    | Static mono panel + CSS cursor blink — replaces former portrait card    |
+| Content truth-pass                 | ✅ Live    | Every biographical claim verified against the résumé of record          |
+| CSP (with dev `unsafe-eval`)       | ✅ Live    | Production locked down; dev carve-out for React 19 callstack overlay    |
+| Lighthouse baseline                | ⏳ Planned | Phase 4E — capture and commit alongside redesign                        |
+| Bundle analysis                    | ⏳ Planned | Phase 4F — prune unused Radix primitives                                |
 
 ---
 
