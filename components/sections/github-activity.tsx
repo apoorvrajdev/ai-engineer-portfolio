@@ -5,16 +5,18 @@ import { GithubActivityClient, type Repository, type StatIconName } from './gith
 const GITHUB_USER = 'apoorvrajdev'
 
 const fallbackRepositories: Repository[] = [
+  { name: 'fraud-radar', href: `https://github.com/${GITHUB_USER}/fraud-radar` },
+  { name: 'image-captioning-system', href: `https://github.com/${GITHUB_USER}/image-captioning-system` },
+  { name: 'unhosted-core', href: `https://github.com/${GITHUB_USER}/unhosted-core` },
+  { name: 'plant-disease-detection', href: `https://github.com/${GITHUB_USER}/plant-disease-detection` },
   { name: 'diabetes-risk-prediction-ai', href: `https://github.com/${GITHUB_USER}/diabetes-risk-prediction-ai` },
   { name: 'heart-disease-ai', href: `https://github.com/${GITHUB_USER}/heart-disease-ai` },
-  { name: 'restaurant-sentiment-analysis', href: `https://github.com/${GITHUB_USER}/restaurant-sentiment-analysis` },
-  { name: 'core-application-services', href: `https://github.com/${GITHUB_USER}/core-application-services` },
   { name: 'ai-engineer-portfolio', href: `https://github.com/${GITHUB_USER}/ai-engineer-portfolio` },
 ]
 
 const stats: Array<{ label: string; value: string; icon: StatIconName }> = [
   { label: 'GitHub Profile', value: `@${GITHUB_USER}`, icon: 'FolderGit2' },
-  { label: 'Latest Repositories', value: '5', icon: 'Star' },
+  { label: 'Latest Repositories', value: '7', icon: 'Star' },
   { label: 'Contribution Activity', value: 'Active', icon: 'GitPullRequestArrow' },
   { label: 'Recent Commits', value: 'Visualized', icon: 'Activity' },
 ]

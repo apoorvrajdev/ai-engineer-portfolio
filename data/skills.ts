@@ -5,31 +5,67 @@ export interface SkillCategory {
 
 export const skills: SkillCategory[] = [
   {
-    category: 'Programming & Data',
-    skills: ['Python', 'SQL', 'Pandas', 'NumPy'],
+    category: 'Languages',
+    skills: ['Python', 'TypeScript', 'Rust', 'SQL', 'Bash'],
   },
   {
     category: 'Machine Learning & AI',
-    skills: ['PyTorch', 'TensorFlow', 'Scikit-learn', 'Predictive Modeling', 'NLP', 'Generative AI'],
+    skills: [
+      'PyTorch',
+      'TensorFlow',
+      'Keras',
+      'Scikit-learn',
+      'XGBoost',
+      'SHAP',
+      'Transformer',
+      'InceptionV3',
+      'EfficientNetB0',
+      'SMOTE',
+      'Generative AI',
+      'NLP',
+    ],
   },
   {
     category: 'Backend & APIs',
-    skills: ['REST APIs', 'FastAPI', 'Pydantic'],
+    skills: [
+      'FastAPI',
+      'Pydantic v2',
+      'SQLAlchemy 2.0',
+      'Alembic',
+      'PostgreSQL',
+      'SQLite',
+      'structlog',
+      'Uvicorn',
+      'REST',
+    ],
   },
   {
-    category: 'Data Processing',
-    skills: ['Data Preprocessing', 'Feature Engineering', 'Model Evaluation'],
+    category: 'Frontend',
+    skills: ['React 19', 'Next.js', 'Vite', 'Tailwind CSS', 'TanStack Query', 'Recharts', 'framer-motion'],
   },
   {
-    category: 'DevOps & Deployment',
-    skills: ['CI/CD Pipelines', 'Docker', 'Podman', 'Vercel'],
+    category: 'Data & Pipelines',
+    skills: ['Pandas', 'NumPy', 'Feature Engineering', 'Model Evaluation', 'SMOTE', 'Faker'],
+  },
+  {
+    category: 'Serving & Deployment',
+    skills: [
+      'Streamlit',
+      'Gradio',
+      'Hugging Face Spaces',
+      'Vercel',
+      'Docker',
+      'Podman',
+      'CI/CD',
+      'GitHub Actions',
+    ],
+  },
+  {
+    category: 'Quality & Testing',
+    skills: ['pytest', 'mypy (strict)', 'Ruff', 'ESLint', 'pre-commit', 'nbstripout'],
   },
   {
     category: 'Tools & Platforms',
-    skills: ['Git', 'GitHub', 'Linux', 'PostgreSQL', 'AWS', 'Postman'],
-  },
-  {
-    category: 'Software Engineering',
-    skills: ['OOP', 'SDLC', 'Agile/Scrum', 'Unit Testing', 'Debugging'],
+    skills: ['Git', 'GitHub', 'Linux', 'AWS', 'uv', 'npm'],
   },
 ]
