@@ -392,7 +392,29 @@ Honest extension paths beyond the current scope, ordered by reviewer-impact:
 
 ---
 
-## 📜 License & Contact
+## �️ Coming Soon — Arcade-Style Games
+
+> 🚧 **Status: Under development.** A playful, in-browser arcade wing of the portfolio is being prototyped under [`game/`](game/). The intent is to give the site a second surface — alongside the case studies — where engineering taste shows up as *something you can play*, not just something you can read.
+
+The first prototype is **ModiLander** (see [`game/ModiLander-main/`](game/ModiLander-main/)) — a Vite + TypeScript lunar-lander-style arcade game living in its own self-contained subproject. It is intentionally isolated from the Next.js app (its own `package.json`, `vite.config.ts`, `tsconfig`, and PWA `dev-dist/`) so the portfolio build stays lean while the game iterates independently.
+
+**Planned roadmap for the arcade wing:**
+
+- [ ] **A1** — Ship ModiLander v1 as a standalone deployment, linked from the portfolio nav and command palette
+- [ ] **A2** — Add an `/arcade` route to the Next.js app that lists each game with a screenshot, status badge, and "Play" CTA — driven by a typed `data/games.ts` entry, mirroring the `data/projects.ts` pattern
+- [ ] **A3** — Embed playable builds in-page (iframe or `<canvas>` mount) with a focus-aware "click to play" gate so games don't steal keystrokes on scroll
+- [ ] **A4** — Add 2–3 more short arcade titles in distinct genres (twin-stick, rhythm, puzzle) so the wing reads as a small collection, not a one-off
+- [ ] **A5** — Per-game leaderboard via a tiny serverless KV store (Vercel KV / Upstash), opt-in handle, no accounts
+- [ ] **A6** — Mobile/touch controls + `prefers-reduced-motion` and motion-sensitivity toggles for every title
+- [ ] **A7** — Lighthouse + bundle budgets enforced per game so the arcade can't regress the main site's performance baselines
+
+**Why ship games at all?** Because "the portfolio is the product" cuts both ways. A reviewer who plays a 60-second arcade build on the site sees latency, input handling, asset budgets, and polish in a way a static screenshot of a model never communicates. The arcade wing is the playable counterpart to the case-study wing — same engineering bar, different surface.
+
+> This section will be promoted out of *Coming Soon* once the first build is live and linked from the home page.
+
+---
+
+## �📜 License & Contact
 
 This project is released under the [MIT License](LICENSE).
 
