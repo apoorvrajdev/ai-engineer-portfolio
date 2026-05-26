@@ -57,36 +57,46 @@ There is no test suite configured.
 
 - `next.config.mjs` sets `images.unoptimized: true`, so `<img>` is used directly across the site. When adding new images, prefer `<img>` and silence the lint warning inline (`// eslint-disable-next-line @next/next/no-img-element`).
 - `tsconfig.json` excludes `resource/` (the Paperfolio inspiration template lives there but is not part of the app).
-- Tailwind **v4** is used in CSS-first mode (`@import 'tailwindcss'` in `app/globals.css`). There is no `tailwind.config.js` — design tokens are CSS custom properties in `:root` / `.dark` blocks in `globals.css`. **Tailwind v4 auto-generates utilities from any `--color-*` declared in the `@theme inline` block**, which is how `bg-hl-coral`, `bg-hl-blue`, `bg-hl-yellow`, etc. resolve to the highlight palette.
+- Tailwind **v4** is used in CSS-first mode (`@import 'tailwindcss'` in `app/globals.css`). There is no `tailwind.config.js` — design tokens are CSS custom properties in `:root` (dark canvas) and `.light` (inverted) blocks in `globals.css`. **Tailwind v4 auto-generates utilities from any `--color-*` declared in the `@theme inline` block**, which is how `bg-background`, `text-foreground`, `border-border`, etc. resolve.
 - `components.json` declares shadcn config: `style: new-york`, `baseColor: neutral`, `iconLibrary: lucide`, `rsc: true`. Add new primitives via `npx shadcn@latest add <name>` rather than hand-writing them under `components/ui/`.
 - Path alias: `@/*` resolves to the repo root (see `tsconfig.json`).
 - TS is `strict: true` with `target: ES6`, `moduleResolution: bundler`.
-- Canonical site URL is `https://ai-engineer-portfolio-pi.vercel.app` and is **hardcoded in three places** that must be updated together: `app/layout.tsx` (`metadataBase` + OG), `app/sitemap.ts` (`SITE_URL`), and `components/structured-data.tsx` (`SITE_URL`).
+- Canonical site URL is `https://ai-engineer-portfolio-pi.vercel.app` and is **hardcoded in three places** that must be updated together: `app/layout.tsx` (`metadataBase` + OG), `app/sitemap.ts` (`SITE_URL`), and `components/structured-data.tsx` (`SITE_URL`). The OG artwork in `app/opengraph-image.tsx` also bakes the URL into the image.
 
-## Design system: Paperfolio neo-brutalism
+## Design system: Linear-inspired dark theme
 
-The visual language is adapted from the Paperfolio template in `resource/paperfolio-portfolio-template/`:
+The site has been migrated off the early Paperfolio neo-brutalist palette to a Linear-inspired dark-first system. The full token spec lives in [`DESIGN.md`](DESIGN.md); the implementation lives in [`app/globals.css`](app/globals.css). The Paperfolio template in `resource/paperfolio-portfolio-template/` is kept as reference only — it is excluded from the build and from ESLint.
 
-- **Light-first**: pure-white background, pure-black text. Dark mode is opt-in via the nav toggle (palette flipped, but the same neo-brutalist primitives — borders go white, shadows go white).
-- **Thick black borders** (`border-[3px]` or `border-4`) and **hard offset drop-shadows** (`box-shadow: 8px 8px 0 #000`) instead of soft shadows / glassmorphism.
-- **Highlight spans** for emphasis in headings — solid-color background, white text, inline padding. Use the `.highlight-coral` / `.highlight-blue` / `.highlight-indigo` / `.highlight-yellow` / `.highlight-black` utilities from `globals.css`.
-- **Fonts**: Onest (sans) + JetBrains Mono (mono), loaded via `next/font/google` in `app/layout.tsx`. Exposed to Tailwind as `var(--font-onest)` and `var(--font-jetbrains-mono)`.
+- **Dark-first**: canvas `#010102`, surface ladder `#0f1011 → #1c1d1e`, hairline borders (`--hairline #23252a`), no drop shadows on dark. Light mode (toggled via the nav button) inverts onto a `#ffffff` canvas with `#e6e7e9` hairlines. There is no system theme fallback — `ThemeProvider` is configured with `defaultTheme="dark"`, `enableSystem={false}`, `storageKey="theme-preference"`.
+- **Single chromatic accent**: lavender `#5e6ad2` (`--accent`) is the only color used for emphasis, links, focus rings, and primary CTAs. `--accent-hover` `#828fff`, `--accent-focus` `#5e69d1`, `--accent-soft` `rgba(94,106,210,0.12)`.
+- **Typography**: Onest (sans) + JetBrains Mono (mono), loaded via `next/font/google` in `app/layout.tsx`. Exposed to Tailwind as `var(--font-onest)` and `var(--font-jetbrains-mono)`.
+- **Ink scale**: `--ink #f7f8f8`, `--ink-muted #d0d6e0`, `--ink-subtle #8a8f98`, `--ink-tertiary #62666d`.
 
 ### Core utility classes (in `app/globals.css`)
 
 - `.container-shell` — page width wrapper (`max-w-7xl`, responsive padding).
 - `.section-spacing` — standard vertical rhythm (`py-16 md:py-24`).
-- `.brutal-card` — `rounded-[28px] border-[3px] border-black bg-white` (auto-flips to white border + dark card in dark mode).
-- `.brutal-shadow` / `.brutal-shadow-sm` / `.brutal-shadow-lg` — hard offset drop-shadow at 8/6/12 px (color flips with theme).
-- `.hover-lift` — combined translate + shadow on hover (the signature interaction).
-- `.btn-brutal` / `.btn-brutal-outline` — primary CTA (black fill) and secondary CTA (white fill with thick black border). Both gain a 6px shadow on hover.
-- `.pill-tag` — uppercase mono chip (black bg, white text). **Heads up:** in dark mode it flips to white-bg/black-text, so don't use it inside cards that are forced-white-in-dark (e.g. inside the dark Experience section's white cards) — write the chip inline there.
-- `.highlight-{coral,blue,indigo,yellow,black}` — the inline solid-color highlight span used in section headings.
+- `.linear-card` — `border: 1px solid var(--hairline)` over `var(--surface-1)`, `12px` radius, top-edge highlight (`::before` 1px gradient, hidden in light mode).
+- `.linear-card-hover` — hairline strengthens to `--hairline-strong` and surface lifts to `--surface-2` on hover. The signature interaction; no translate, no shadow.
+- `.linear-card-featured` — same card with an accent-tinted border for the primary project tile.
+- `.btn-primary` — lavender fill, white text, accent-hover on hover. The single primary CTA.
+- `.btn-secondary` — surface-1 fill with hairline border, surface-2 on hover.
+- `.btn-tertiary` — text-only ink-subtle button (used for tertiary navigation actions).
 - `.animate-{fade-in,fade-in-up,scale-in,float,marquee}` and `.stagger-{1..6}` — kept lightweight; no glow/gradient animations.
 
-### Highlight palette (CSS custom properties)
+### Compatibility aliases (do not author new code against these)
 
-`--hl-coral` `#FF4A60` · `--hl-blue` `#2F81F7` · `--hl-indigo` `#6366F1` · `--hl-yellow` `#FFC224` · `--hl-mint` `#34D399`. Available as `bg-hl-coral`, `text-hl-blue`, etc. via Tailwind v4's `@theme inline`.
+The following classes from the previous neo-brutalist phase still exist in `globals.css` so legacy components compile without churn. They are **aliases mapped onto the Linear tokens**, not a coexisting design language. New code should use the `.linear-*` / `.btn-*` primitives above.
+
+- `.brutal-card` → resolves to a hairline-bordered surface card (same visual as `.linear-card`).
+- `.brutal-shadow{,-sm,-lg}` → `box-shadow: none` on dark. No hard offset drop-shadows.
+- `.btn-brutal` / `.btn-brutal-outline` → alias to `.btn-primary` / `.btn-secondary`.
+- `.highlight-{coral,blue,indigo,yellow,black}` → render as inline accent-colored text (`color: var(--accent)`), not solid-background spans. There is no multi-color highlight palette anymore.
+- `--hl-coral`, `--hl-blue`, `--hl-indigo` all alias to `--accent`; `--hl-yellow` aliases to `--ink-muted`; `--hl-mint` aliases to `--success #27a644`. The `bg-hl-*` / `text-hl-*` Tailwind utilities still resolve, but produce a single-accent rendering.
+
+### Known design-system gaps
+
+- **No `prefers-reduced-motion` support yet** — `globals.css` has no `@media (prefers-reduced-motion: reduce)` block, and the framer-motion primitives in `components/motion/*` do not consult `useReducedMotion()`. Tracked as roadmap **3G**. When adding new motion, gate it on reduced-motion or it will ship the accessibility regression with you.
 
 ## Architecture
 
@@ -94,7 +104,7 @@ This is a Next.js 16 App Router portfolio site (React 19, framer-motion, next-th
 
 ### Routing & layout
 
-- `app/layout.tsx` — root server layout. Loads Onest + JetBrains Mono via `next/font`, wraps the tree in `ThemeProvider` (next-themes, `class` attribute, `defaultTheme="light"`, system fallback), and injects `<StructuredData />` JSON-LD into `<head>`. Site `metadata` (OG/Twitter/icons) lives here — update it alongside the URL constants noted above when changing branding.
+- `app/layout.tsx` — root server layout. Loads Onest + JetBrains Mono via `next/font`, wraps the tree in `ThemeProvider` (next-themes, `class` attribute, `defaultTheme="dark"`, `enableSystem={false}`, `storageKey="theme-preference"`), and injects `<StructuredData />` JSON-LD into `<head>`. Site `metadata` (OG/Twitter/icons) lives here — update it alongside the URL constants noted above when changing branding.
 - `app/template.tsx` — runs on every navigation; wraps children in `PageTransition` so route changes animate.
 - `app/page.tsx` — composes the home page from `components/sections/*` in display order. Reordering or adding a section is done here. **Note:** `components/sections/education.tsx` and `data/education.ts` exist but are **not currently mounted** in `app/page.tsx` or `navLinks`; wire both up if reintroducing the section.
 - `app/projects/[slug]/page.tsx` — **server** component. Calls `generateStaticParams()` from `data/projects.ts` so every project page is pre-rendered at build time, and exports `generateMetadata` for per-project OG/Twitter tags. Adding a project is purely a data change in `data/projects.ts`; the route and sitemap pick it up automatically. Missing slugs `notFound()`.
@@ -106,12 +116,14 @@ This is a Next.js 16 App Router portfolio site (React 19, framer-motion, next-th
 ### Components
 
 - `components/sections/*` — one file per home-page section. All `'use client'` except `github-activity.tsx`, which is an async server component (see below).
-- `components/section-wrapper.tsx` — standard frame for sections: applies `.section-spacing`, wraps content in `Reveal` (scroll-triggered fade-up), and accepts a `dark` prop that flips the section to a black background with light text (used by Experience). New sections should use this and pass an `id` matching the nav anchor.
-- `components/section-heading.tsx` — eyebrow + title + optional `highlight` span + description. The `highlight` prop renders an inline colored span via the `.highlight-*` utilities; pass `highlightColor` to pick the palette swatch. Use `invert` for headings inside a `dark` section.
-- `components/navigation.tsx` — **floating pill** nav (`max-w-3xl` centered, `border-[3px] border-black`, `brutal-shadow-sm`). The `navLinks` array drives both the menu and an `IntersectionObserver` that highlights the active section. **When adding/removing a section, update `navLinks` and ensure the section's `id` matches.** The footer still links to `#open-source` (the github-activity section) even though it's not in the top nav.
-- `components/motion/*` — `Reveal` (the standard scroll reveal; also exports `staggerContainer` and `revealItem` variants) and `PageTransition`.
-- `components/scroll-progress.tsx` — top-of-page scroll progress bar (4px, coral fill); mounted once in `app/page.tsx` above `<Navigation />`.
-- `components/project-card.tsx` — neo-brutalist project card with a colored header swatch (mapped from `project.category`), GitHub/demo icon buttons, and a "View case study" link to `/projects/[slug]`.
+- `components/section-wrapper.tsx` — standard frame for sections: applies `.section-spacing`, wraps content in `Reveal` (scroll-triggered fade-up), and accepts a `dark` prop for sections that need to invert against the canvas (kept for API compatibility; on the dark-first canvas the inversion is mostly a no-op). New sections should use this and pass an `id` matching the nav anchor.
+- `components/section-heading.tsx` — eyebrow + title + optional `highlight` span + description. The `highlight` prop renders an inline accent-colored span; `highlightColor` is accepted for API compatibility but all values now resolve to the single lavender accent. Use `invert` for headings inside a `dark` section.
+- `components/navigation.tsx` — floating pill nav (`max-w-3xl` centered, hairline border, surface-1 background, backdrop blur). The `navLinks` array drives both the menu and an `IntersectionObserver` that highlights the active section. **When adding/removing a section, update `navLinks` and ensure the section's `id` matches.** The footer still links to `#open-source` (the github-activity section) even though it's not in the top nav.
+- `components/motion/*` — `Reveal` (the standard scroll reveal; also exports `staggerContainer` and `revealItem` variants) and `PageTransition`. Neither currently consults `useReducedMotion()` — see the design-system gaps note above.
+- `components/scroll-progress.tsx` — top-of-page scroll progress bar (lavender accent fill); mounted once in `app/page.tsx` above `<Navigation />`.
+- `components/command-palette.tsx` — global ⌘K / Ctrl+K / `?` palette built on `cmdk` and rendered through a portal. Three groups (Navigate · Links · Actions), substring filter, focus restored on close, body scroll locked while open, `role="dialog"` + `aria-modal="true"` + `aria-label="Command palette"`.
+- `components/theme-toggle.tsx` — Sun ⇄ Moon button wired through `next-themes`. Hydration-safe via a `mounted` guard.
+- `components/project-card.tsx` — hairline-bordered project card with a category-tinted header swatch, GitHub/demo icon buttons, status dot, and a "View case study" link to `/projects/[slug]`.
 - `components/ui/*` — shadcn/ui primitives. Treat as generated; consume via `cn()` from `@/lib/utils`.
 - `components/structured-data.tsx` — JSON-LD (Person/Organization/Breadcrumb/ItemList). Keep in sync with `app/layout.tsx` metadata.
 

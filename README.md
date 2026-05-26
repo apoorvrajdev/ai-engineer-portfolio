@@ -125,15 +125,16 @@ The visual language is captured in [`DESIGN.md`](DESIGN.md) as a typed spec — 
 ```
 Page → Section → Reveal-wrapped card grid → Themed primitive
                     │
-                    ├── tokens   ──▶ CSS custom properties (:root / .dark)
+                    ├── tokens   ──▶ CSS custom properties (:root dark / .light)
                     ├── motion   ──▶ Reveal / staggerContainer / revealItem
                     ├── density  ──▶ container-shell · section-spacing
-                    └── surface  ──▶ brutal-card · brutal-shadow · hover-lift
+                    └── surface  ──▶ linear-card · linear-card-hover · btn-primary
 ```
 
-- **Tokens-first.** All colors, type sizes, and shadows are CSS custom properties — Tailwind v4 auto-generates utility classes from `@theme inline`, so `bg-hl-coral`, `text-ink`, and `border-hairline` are real classes without a config file.
-- **Two visual languages on disk.** The Paperfolio neo-brutalist primitives (`.brutal-card`, `.brutal-shadow`, `.btn-brutal`, `.highlight-*`) and the Linear-inspired dark surfaces co-exist while the redesign settles — both are documented so the migration is a deliberate refactor, not a guess.
+- **Tokens-first.** All colors, type sizes, and radii are CSS custom properties — Tailwind v4 auto-generates utility classes from `@theme inline`, so `bg-background`, `text-foreground`, and `border-border` are real classes without a `tailwind.config.js`.
+- **One design language, dark-first.** The site runs on a Linear-inspired dark canvas (`#010102`) with a single lavender accent (`#5e6ad2`), a four-step surface ladder, and hairline borders. Light mode is the same system inverted onto `#ffffff`. The earlier Paperfolio neo-brutalist primitives (`.brutal-card`, `.brutal-shadow`, `.btn-brutal`, `.highlight-*`) still resolve as **backwards-compatibility aliases** mapped onto the Linear tokens — they are kept so legacy components compile, not because two languages coexist. New code should use the `.linear-card*` and `.btn-{primary,secondary,tertiary}` primitives.
 - **One motion vocabulary.** `Reveal` is the only scroll-triggered fade-up used in the codebase; `PageTransition` wraps route changes. No per-section bespoke animations.
+- **Known gap.** `prefers-reduced-motion` is not yet honored — there is no global media-query reset and the framer-motion primitives do not consult `useReducedMotion()`. Tracked as roadmap **3G**.
 
 ---
 
@@ -296,7 +297,7 @@ Each project's `slug` becomes its URL. Every project in `data/projects.ts` now s
 - [x] **3D** — Section primitives updated (`section-wrapper`, `section-heading`, `project-card`)
 - [x] **3E** — Content truth-pass: every biographical claim aligned to the verified résumé
 - [ ] **3F** — Motion tuning pass (easing curves, stagger timings, hover affordances)
-- [ ] **3G** — Accessibility audit (contrast against new dark surface, focus rings on lavender)
+- [ ] **3G** — Accessibility audit — contrast against the dark surface, focus rings on lavender, and `prefers-reduced-motion` support across `globals.css` + framer-motion primitives
 
 ### Phase 4 — Interaction Layer
 
