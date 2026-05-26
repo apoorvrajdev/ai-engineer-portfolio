@@ -400,13 +400,42 @@ The first prototype is **ModiLander** (see [`game/ModiLander-main/`](game/ModiLa
 
 **Planned roadmap for the arcade wing:**
 
-- [ ] **A1** — Ship ModiLander v1 as a standalone deployment, linked from the portfolio nav and command palette
-- [ ] **A2** — Add an `/arcade` route to the Next.js app that lists each game with a screenshot, status badge, and "Play" CTA — driven by a typed `data/games.ts` entry, mirroring the `data/projects.ts` pattern
-- [ ] **A3** — Embed playable builds in-page (iframe or `<canvas>` mount) with a focus-aware "click to play" gate so games don't steal keystrokes on scroll
-- [ ] **A4** — Add 2–3 more short arcade titles in distinct genres (twin-stick, rhythm, puzzle) so the wing reads as a small collection, not a one-off
-- [ ] **A5** — Per-game leaderboard via a tiny serverless KV store (Vercel KV / Upstash), opt-in handle, no accounts
-- [ ] **A6** — Mobile/touch controls + `prefers-reduced-motion` and motion-sensitivity toggles for every title
-- [ ] **A7** — Lighthouse + bundle budgets enforced per game so the arcade can't regress the main site's performance baselines
+The arcade is sequenced as four phases. Each phase ships a small, self-contained title in a distinct genre so the wing reads as a curated collection rather than a single demo. Every game lives in its own subfolder under [`game/`](game/) with its own build pipeline, and is surfaced on the portfolio through a typed `data/games.ts` entry (mirroring the `data/projects.ts` pattern).
+
+### Phase A — Foundations & First Launch
+
+- [ ] **A1** — Ship **ModiLander** (lunar-lander / physics arcade) v1 as a standalone Vercel deployment from [`game/ModiLander-main/`](game/ModiLander-main/)
+- [ ] **A2** — Add an `/arcade` route to the Next.js app: typed `data/games.ts` schema (`slug` · `title` · `genre` · `status` · `cover` · `playUrl` · `repoUrl` · `controls` · `shortDescription`), grid of game cards mirroring `project-card.tsx`
+- [ ] **A3** — Wire the arcade into global nav + ⌘K command palette (`Navigate → Arcade`, `Actions → Play ModiLander`)
+- [ ] **A4** — In-page embed shell: focus-aware "click to play" gate so games don't steal keystrokes on scroll; Esc returns focus to the page
+
+### Phase B — Genre Expansion (3 more titles)
+
+- [ ] **B1** — **NeonDodge** (twin-stick survival / bullet-hell, 60-second runs) — Canvas2D + requestAnimationFrame, no engine
+- [ ] **B2** — **TokenTetra** (falling-block puzzler reskinned with ML/AI iconography — "stack the tensors") — keyboard + touch, deterministic seeded RNG for daily challenge
+- [ ] **B3** — **PromptRunner** (endless side-scroller where the player dodges "hallucinations" and collects "context tokens") — pixel-art, WebAudio for SFX
+- [ ] **B4** — Shared arcade chrome: pause overlay, restart, mute, high-score badge — extracted into `game/_shared/` so each title doesn't reinvent it
+
+### Phase C — Persistence & Multiplayer-lite
+
+- [ ] **C1** — Per-game leaderboard via Vercel KV (or Upstash Redis): opt-in 3-letter handle, no accounts, rate-limited writes
+- [ ] **C2** — Daily challenge seed: each game exposes a `seed(YYYY-MM-DD)` mode with its own leaderboard
+- [ ] **C3** — Shareable run cards: end-of-run screen renders an OG image (`next/og`) with score + seed for one-click social share
+- [ ] **C4** — **LatencyLab** (rhythm / reaction game tuned to test input → render latency; doubles as a frontend perf demo)
+
+### Phase D — Polish, Accessibility, Performance
+
+- [ ] **D1** — Mobile/touch controls for every title (virtual joystick + action buttons), tested on iOS Safari + Android Chrome
+- [ ] **D2** — `prefers-reduced-motion` and screen-shake / flash toggles wired into each game's settings panel
+- [ ] **D3** — Remappable keys + gamepad (Web Gamepad API) support for keyboard-heavy titles
+- [ ] **D4** — Per-game Lighthouse budgets + bundle-size budgets enforced in CI so the arcade can't regress the main site's Core Web Vitals
+- [ ] **D5** — A "best of" highlight reel on `/arcade` — top run of each game embedded as a looping 6-second clip
+
+### Phase E — Stretch (only if reviewers ask for more)
+
+- [ ] **E1** — **CoOpCanvas** — a small 2-player local-coop puzzle (WebRTC peer mesh, reuses lessons from the Unhosted project)
+- [ ] **E2** — Level editor for TokenTetra with shareable level codes
+- [ ] **E3** — A meta-achievement layer across all titles ("Arcade Tour" badge for clearing one run of each)
 
 **Why ship games at all?** Because "the portfolio is the product" cuts both ways. A reviewer who plays a 60-second arcade build on the site sees latency, input handling, asset budgets, and polish in a way a static screenshot of a model never communicates. The arcade wing is the playable counterpart to the case-study wing — same engineering bar, different surface.
 
