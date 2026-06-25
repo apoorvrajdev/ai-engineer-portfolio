@@ -1,8 +1,15 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
 import { ArrowRight, ArrowUpRight } from 'lucide-react'
+
+// Client-only canvas background — lazy-loaded so it never ships in the SSR
+// payload and can't cause hydration mismatches.
+const DotField = dynamic(() => import('@/components/dot-field').then(m => m.DotField), {
+  ssr: false,
+})
 
 const BUILDS = [
   'real-time fraud systems',
@@ -68,7 +75,14 @@ export function HeroSection() {
   }
 
   return (
-    <section id="home" className="relative">
+    <section id="home" className="relative isolate overflow-hidden">
+      {/* Animated dot-field background — sits behind everything, fades at the
+          edges, and is dimmed by a gradient so content stays fully legible. */}
+      <div className="absolute inset-0 -z-10" aria-hidden>
+        <DotField className="mask-[radial-gradient(130%_100%_at_50%_25%,#000_55%,transparent_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(130%_90%_at_50%_0%,transparent_60%,var(--background)_100%)]" />
+      </div>
+
       <div className="container-shell relative pt-6 pb-12 md:pt-10 md:pb-16">
         <div className="grid items-center gap-14 md:grid-cols-[1.15fr_1fr] md:gap-16">
           <motion.div
