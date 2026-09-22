@@ -5,5 +5,6 @@ import nextTypescript from 'eslint-config-next/typescript'
 export default defineConfig([
   ...nextVitals,
   ...nextTypescript,
-  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts', 'resource/**']),
+  // game/ is a separate app (its own dependencies and build); keep it out of this one.
+  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts', 'resource/**', 'game/**']),
 ])
