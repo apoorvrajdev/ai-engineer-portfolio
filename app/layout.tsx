@@ -3,6 +3,7 @@ import { Onest, JetBrains_Mono } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
 import { StructuredData } from '@/components/structured-data'
 import { CommandPalette } from '@/components/command-palette'
+import { SITE_URL, profile } from '@/data/profile'
 import './globals.css'
 
 const onest = Onest({
@@ -15,26 +16,27 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
 })
 
+const siteTitle = `${profile.name} — ${profile.title}`
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://ai-engineer-portfolio-pi.vercel.app'),
-  title: 'Apoorv Raj — AI Engineer',
-  description:
-    'AI Engineer at Node2.io. IEEE-published on multimodal AI. Building production-grade ML systems end to end.',
-  keywords: 'AI Engineer, Machine Learning, Multimodal AI, PyTorch, TensorFlow, FastAPI, Node2',
-  authors: [{ name: 'Apoorv Raj' }],
+  metadataBase: new URL(SITE_URL),
+  title: siteTitle,
+  description: profile.description,
+  keywords: [...profile.keywords],
+  authors: [{ name: profile.name }],
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://ai-engineer-portfolio-pi.vercel.app',
-    title: 'Apoorv Raj — AI Engineer',
-    description: 'AI Engineer at Node2.io. IEEE-published on multimodal AI. Building production-grade ML systems end to end.',
-    siteName: 'Apoorv Raj',
+    url: SITE_URL,
+    title: siteTitle,
+    description: profile.description,
+    siteName: profile.name,
     images: ['/opengraph-image'],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Apoorv Raj — AI Engineer',
-    description: 'AI Engineer at Node2.io. IEEE-published on multimodal AI. Building production-grade ML systems end to end.',
+    title: siteTitle,
+    description: profile.description,
     images: ['/opengraph-image'],
   },
   icons: {

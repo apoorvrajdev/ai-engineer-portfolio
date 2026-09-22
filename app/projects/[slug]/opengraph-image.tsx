@@ -1,11 +1,26 @@
 import { ImageResponse } from 'next/og'
-import { SITE_HOST, currentRole, profile } from '@/data/profile'
+import { projects } from '@/data/projects'
+import { SITE_HOST, profile } from '@/data/profile'
 
-export const alt = `${profile.name} — ${currentRole} · Co-author of an IEEE paper on image captioning`
+export const alt = `Project case study by ${profile.name}`
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
-export default function OpengraphImage() {
+export function generateStaticParams() {
+  return projects.map((project) => ({ slug: project.slug }))
+}
+
+export default async function ProjectOpengraphImage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
+  const project = projects.find((p) => p.slug === slug)
+  const title = project?.shortTitle ?? profile.name
+  const summary = project?.shortDescription ?? profile.tagline
+  const meta = project ? `${project.status} · ${project.period}` : ''
+
   return new ImageResponse(
     (
       <div
@@ -48,32 +63,32 @@ export default function OpengraphImage() {
               textTransform: 'uppercase',
             }}
           >
-            {`${profile.name.toLowerCase()} · portfolio`}
+            {`${profile.name.toLowerCase()} · case study`}
           </span>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
           <div
             style={{
-              fontSize: '88px',
+              fontSize: '80px',
               fontWeight: 800,
               color: 'white',
               letterSpacing: '-0.02em',
               lineHeight: 1,
             }}
           >
-            {profile.name.toUpperCase()}
+            {title}
           </div>
           <div
             style={{
-              fontSize: '40px',
-              fontWeight: 600,
+              fontSize: '34px',
+              fontWeight: 500,
               color: '#bcd0ff',
-              lineHeight: 1.2,
-              maxWidth: '1000px',
+              lineHeight: 1.3,
+              maxWidth: '1040px',
             }}
           >
-            {profile.tagline}
+            {summary}
           </div>
         </div>
 
@@ -87,8 +102,8 @@ export default function OpengraphImage() {
             fontFamily: 'monospace',
           }}
         >
-          <span>{currentRole}</span>
-          <span style={{ color: '#7aa2ff' }}>{SITE_HOST}</span>
+          <span>{meta}</span>
+          <span style={{ color: '#7aa2ff' }}>{`${SITE_HOST}/projects/${slug}`}</span>
         </div>
       </div>
     ),

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { projects } from '@/data/projects'
+import { profile } from '@/data/profile'
 import { ProjectPageClient } from './project-page-client'
 
 interface ProjectPageProps {
@@ -18,22 +19,29 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   const project = projects.find((p) => p.slug === slug)
 
   if (!project) {
-    return { title: 'Project not found | Apoorv Raj' }
+    return { title: `Project not found | ${profile.name}` }
   }
 
+  const title = `${project.title} | ${profile.name}`
+  const path = `/projects/${project.slug}`
+
+  // og:image comes from the colocated opengraph-image.tsx; config-based
+  // openGraph here would otherwise drop the inherited image.
   return {
-    title: `${project.title} | Apoorv Raj`,
-    description: project.description,
+    title,
+    description: project.shortDescription,
+    alternates: { canonical: path },
     openGraph: {
-      title: `${project.title} | Apoorv Raj`,
-      description: project.description,
+      title,
+      description: project.shortDescription,
       type: 'article',
-      url: `/projects/${project.slug}`,
+      url: path,
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${project.title} | Apoorv Raj`,
-      description: project.description,
+      title,
+      description: project.shortDescription,
+      images: [`${path}/opengraph-image`],
     },
   }
 }
