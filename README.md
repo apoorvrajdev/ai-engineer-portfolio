@@ -28,7 +28,7 @@
 
 ## Status
 
-> 🟢 **Live and deploying from `main`.** The site is shipped on Vercel and rebuilds on every push. Phases 1–4 are complete: App Router scaffold, typed content schema, all home-page sections, statically-generated project case studies, ISR-driven GitHub activity, JSON-LD, dynamic OG image, the full **Linear-inspired** visual reset (near-black canvas `#010102`, lavender accent `#5e6ad2`, hairline-bordered surfaces) captured in [`DESIGN.md`](DESIGN.md), a content truth-pass aligning every biographical claim to the verified résumé, terminal hero card, global ⌘K command palette, and light/dark theme toggle. The current surface area is **Phase 5 — Project Depth Pass**: the project section now ships **6 typed projects** (Fraud Radar · Image Captioning · Unhosted · Plant Disease · Diabetes Risk · Heart Disease) each with full `problem → dataset → architecture → training → results` case studies, a status field (`Live` / `In development` / `Pre-alpha` / `Published`) surfaced as a colored badge on every card, and three distinct project artworks. Motion tuning, an accessibility audit, and Lighthouse baselines are next.
+> 🟢 **Live and deploying from `main`.** The site is shipped on Vercel and rebuilds on every push. Phases 1–5 built the App Router scaffold, typed content, all home-page sections, statically-generated case studies, ISR-driven GitHub activity, JSON-LD, OG images, the **Linear-inspired** visual system captured in [`DESIGN.md`](DESIGN.md), the terminal hero card, the ⌘K command palette and the theme toggle. **Phase 6 — Evidence pass** re-checked every project claim against its repository and every role against the current CV, credited collaborators, replaced the fixed case-study template with project-specific sections and sources, moved identity into a single `data/profile.ts`, added canonical URLs and per-project share images, fixed text contrast, and added a CI gate. The visual and information-architecture redesign is next.
 
 > 📐 **Why this exists.** A portfolio for an AI engineer should *look like* engineering: typed data, statically-generated routes, structured metadata, an actual design system. The site is the deliverable, but the repo is the demonstration.
 
@@ -36,7 +36,7 @@
 
 ## 🎯 What Is This Project?
 
-This is a portfolio site for **Apoorv Raj** — AI Engineer at Node2.io, IEEE-published on multimodal AI (CNN + Transformer image captioning on COCO). It is the public-facing surface for the work: shipped products, the IEEE paper, an early ML internship, and the projects that don't fit neatly into any of those buckets.
+This is a portfolio site for **Apoorv Raj** — AI Engineer (contract) at Node2.io and co-author of an IEEE paper on CNN + Transformer image captioning. It is the public-facing surface for the work: a flagship fraud-detection system, the paper and its codebase, professional experience, and earlier projects presented with their real scope and credits.
 
 It is **not** a template fork dressed up with new copy, and it is **not** a CMS-backed site. It is a hand-built Next.js 16 App Router application where every section is a typed React component, every project is a typed entry in `data/projects.ts`, and every page that gets indexed by search engines is statically pre-rendered with its own metadata, OG image, and JSON-LD structured data.
 
@@ -52,7 +52,8 @@ This project is the answer to both:
 
 - **Content is typed data, not markup.** Adding a project is one entry in `data/projects.ts` — the route, the sitemap, the OG metadata, the case study page, and the search-engine indexing all update automatically.
 - **Every page is statically generated.** Per-project case study routes are pre-rendered at build time via `generateStaticParams`, so cold-load TTFB is measured in tens of milliseconds and crawlers see fully-rendered HTML.
-- **SEO is treated as engineering.** JSON-LD structured data (Person, Organization, BreadcrumbList, ItemList), dynamic OG images via `next/og`, per-project Twitter metadata, and an auto-generated sitemap — wired once, no afterthought.
+- **SEO is treated as engineering.** JSON-LD structured data (Person, Organization, ItemList, ScholarlyArticle), site-wide and per-project OG images via `next/og`, per-page canonical URLs, per-project descriptions and Twitter metadata, and an auto-generated sitemap — wired once, no afterthought.
+- **Content is held to an evidence bar.** Every figure names what it was measured on, collaborators are credited, and each case study ends with links to its sources. The rules live in [`CLAUDE.md`](CLAUDE.md#content-accuracy-rules).
 - **The design system is committed.** Tokens live in CSS custom properties, typography scale is named, and the entire visual language can be diffed across redesigns.
 
 ---
@@ -64,7 +65,8 @@ This project is the answer to both:
 - **Statically-generated project routes** with per-project `generateMetadata` for OG / Twitter / canonical tags.
 - **Server-side data fetching** for GitHub activity via async server components, with **ISR** (1-hour revalidate) and a deterministic fallback list so the section never goes blank.
 - **Tailwind v4 CSS-first** configuration — no `tailwind.config.js`, design tokens declared as CSS custom properties in `@theme inline`, palette utilities auto-generated.
-- **shadcn/ui** primitives (new-york style, lucide icons) composed via `cn()` from a tiny `clsx + tailwind-merge` helper.
+- Class composition via `cn()` from a tiny `clsx + tailwind-merge` helper, with a shadcn/ui config (new-york style, lucide icons) kept for adding primitives.
+- **A CI gate** (GitHub Actions) running lint, typecheck and a production build on every push to `main` and every pull request.
 - **Theming** via `next-themes` with a class-based dark mode and a typed `ThemeProvider` wrapper.
 - **Motion as a system** — a reusable `Reveal` scroll-trigger, `PageTransition` route wrapper, and shared `staggerContainer / revealItem` variants — not a pile of one-off `motion.div` props.
 - **Global command palette** built on `cmdk` — ⌘K / Ctrl+K / `?` opens it from anywhere, Esc closes, arrow keys navigate, Enter activates. Three groups (Navigate · Links · Actions), substring filter, focus restored to the previously focused element on close, body scroll locked while open. Accessible via `role="dialog"`, `aria-modal`, and `aria-label`.
@@ -144,15 +146,14 @@ Page → Section → Reveal-wrapped card grid → Themed primitive
 | ------------------ | --------------------------------------------------------------------------------------------- |
 | **Framework**      | Next.js 16 (App Router, RSC), React 19, TypeScript 5.7 strict                                 |
 | **Styling**        | Tailwind CSS v4 (CSS-first config), PostCSS, tw-animate-css                                   |
-| **UI primitives**  | shadcn/ui (new-york style), Radix UI, lucide-react icons, `cmdk` command menu                 |
-| **Motion**         | framer-motion 11, react-intersection-observer                                                 |
+| **UI primitives**  | lucide-react icons, `cmdk` command menu (shadcn/ui config retained for future primitives)     |
+| **Motion**         | framer-motion 11                                                                              |
 | **Theming**        | next-themes (class strategy, `dark` default, explicit toggle — no system fallback)            |
 | **UX affordances** | Global command palette (⌘K), light/dark toggle, scroll-progress bar, smooth-scroll navigation |
-| **Forms / state**  | react-hook-form + zod + @hookform/resolvers, sonner toasts                                    |
 | **Fonts**          | Onest + JetBrains Mono via `next/font/google`                                                 |
-| **SEO**            | `next/og` dynamic OG image, JSON-LD structured data, auto sitemap                             |
-| **Quality**        | ESLint 9 flat config (`eslint-config-next/core-web-vitals` + `/typescript`)                   |
-| **Hosting**        | Vercel (Edge runtime for OG, ISR for GitHub Activity)                                         |
+| **SEO**            | `next/og` OG images (site + per project), JSON-LD, canonical URLs, auto sitemap               |
+| **Quality**        | ESLint 9 flat config, `tsc --noEmit`, GitHub Actions CI (lint · typecheck · build)            |
+| **Hosting**        | Vercel (OG images generated at build time, ISR for GitHub Activity)                           |
 
 ---
 
@@ -166,9 +167,10 @@ ai-engineer-portfolio/
 │   ├── page.tsx                          # Home page — composes sections in display order
 │   ├── globals.css                       # Tailwind v4 + design tokens + utility primitives
 │   ├── sitemap.ts                        # Auto-generated from data/projects.ts
-│   ├── opengraph-image.tsx               # Edge-rendered OG image via next/og
+│   ├── opengraph-image.tsx               # Site-wide OG image via next/og (text from data/profile.ts)
 │   └── projects/[slug]/
-│       ├── page.tsx                      # SSG server route · generateStaticParams + Metadata
+│       ├── page.tsx                      # SSG server route · generateStaticParams + Metadata + canonical
+│       ├── opengraph-image.tsx           # Per-project OG image, generated at build time
 │       └── project-page-client.tsx       # Interactive client half (framer-motion, scroll)
 ├── components/
 │   ├── sections/                         # One file per home-page section
@@ -192,18 +194,19 @@ ai-engineer-portfolio/
 │   ├── section-heading.tsx               # Eyebrow + title + highlight span + description
 │   ├── project-card.tsx                  # Category-tinted card → /projects/[slug]
 │   ├── scroll-progress.tsx               # Top-of-page scroll progress bar
-│   ├── structured-data.tsx               # JSON-LD (Person · Organization · Breadcrumb · ItemList)
-│   └── ui/                               # shadcn/ui primitives (generated · consume via cn())
+│   └── structured-data.tsx               # JSON-LD (Person · Organization · ItemList · ScholarlyArticle)
 ├── data/                                 # Typed single source of truth for site content
-│   ├── projects.ts                       # Project[] · drives routes, sitemap, OG, ItemList
+│   ├── profile.ts                        # Identity facts + SITE_URL · drives metadata, JSON-LD, OG, hero, footer
+│   ├── projects.ts                       # Project[] · drives cards, case studies, sitemap, OG, ItemList
 │   ├── experience.ts
 │   ├── research.ts
 │   ├── skills.ts
 │   └── education.ts                      # Defined; not currently mounted in page.tsx
 ├── lib/
 │   └── utils.ts                          # cn() helper (clsx + tailwind-merge)
-├── hooks/                                # Reusable React hooks
+├── hooks/                                # Reusable React hooks (use-mounted.ts)
 ├── public/                               # Static assets (project SVGs, icons, robots.txt)
+├── .github/workflows/ci.yml              # Lint · typecheck · build on push and pull request
 ├── CLAUDE.md                             # Project rules · commit policy · architecture map
 ├── DESIGN.md                             # Typed design-system spec (colors, type, motion)
 ├── components.json                       # shadcn config (style: new-york · iconLibrary: lucide)
@@ -219,7 +222,7 @@ ai-engineer-portfolio/
 
 ### Prerequisites
 
-- Node **20+**
+- Node **20.9+** (CI runs Node 24)
 - npm (or pnpm / yarn — lockfile is `package-lock.json`)
 - Git
 
@@ -244,7 +247,8 @@ npm run start      # serves the production build
 ### Lint
 
 ```bash
-npm run lint       # ESLint flat config · ignores resource/
+npm run lint       # ESLint flat config · ignores resource/ and game/
+npm run typecheck  # tsc --noEmit
 ```
 
 ---
@@ -254,16 +258,17 @@ npm run lint       # ESLint flat config · ignores resource/
 Every piece of visible content is a typed entry in `data/*.ts`. **Editing the site is almost always a data-file change, not a component change.**
 
 ```bash
-data/projects.ts        # → /projects/[slug] routes, sitemap, ItemList JSON-LD
+data/profile.ts         # → name, title, employer, links, SITE_URL — metadata, JSON-LD, OG, hero, footer
+data/projects.ts        # → cards, /projects/[slug] case studies, share images, sitemap, ItemList JSON-LD
 data/experience.ts      # → Experience section timeline
-data/research.ts        # → Research section cards
+data/research.ts        # → Research section cards + ScholarlyArticle JSON-LD
 data/skills.ts          # → Tech Stack section chips
-data/education.ts       # → defined but not mounted in app/page.tsx (wire it back if needed)
+data/education.ts       # → About section education card
 ```
 
-Each project's `slug` becomes its URL. Every project in `data/projects.ts` now ships with a **full case study** — title, description, stack, GitHub / demo links, an optional `status` (`Live` / `In development` / `Pre-alpha` / `Published`) rendered as a colored dot on the card, and a `fullDetails` block (`problem` → `dataset` → `architecture` → `training` → `results`) that drives the five-section deep-dive layout at `/projects/[slug]`. New entries that don't yet have a write-up can omit `fullDetails` and fall back to the header-only layout.
+Each project's `slug` becomes its URL. A project carries its `tier` (flagship / secondary / earlier), `role` (solo / collaboration / contribution), `status` (`Live demo` / `Demo offline` / `Research stage` / `Earlier work`), `period`, a `shortDescription` of 160 characters or fewer (card blurb and meta description), and a list of project-specific `sections` — there is no fixed template, so a systems project isn't forced into "dataset" and "training" headings. Every case study ends with `sources` and the date its facts were last checked.
 
-**Three URL constants must stay in sync** when changing the canonical site URL: `app/layout.tsx` (metadataBase + OG), `app/sitemap.ts` (`SITE_URL`), and `components/structured-data.tsx` (`SITE_URL`). The OG image (`app/opengraph-image.tsx`) also bakes the URL into the artwork.
+The canonical site URL is defined once, as `SITE_URL` in `data/profile.ts`.
 
 ---
 
@@ -295,9 +300,9 @@ Each project's `slug` becomes its URL. Every project in `data/projects.ts` now s
 - [x] **3B** — Token migration in `globals.css` (CSS custom properties for ink, surface, hairline, accent)
 - [x] **3C** — Hero and Navigation reworked to the new visual language
 - [x] **3D** — Section primitives updated (`section-wrapper`, `section-heading`, `project-card`)
-- [x] **3E** — Content truth-pass: every biographical claim aligned to the verified résumé
+- [x] **3E** — First content pass against the résumé (superseded by the evidence pass, **6A**)
 - [ ] **3F** — Motion tuning pass (easing curves, stagger timings, hover affordances)
-- [ ] **3G** — Accessibility audit — contrast against the dark surface, focus rings on lavender, and `prefers-reduced-motion` support across `globals.css` + framer-motion primitives
+- [ ] **3G** — Accessibility audit — contrast fixed in **6F**; focus rings on lavender and `prefers-reduced-motion` support across `globals.css` + framer-motion primitives still outstanding
 
 ### Phase 4 — Interaction Layer
 
@@ -306,7 +311,7 @@ Each project's `slug` becomes its URL. Every project in `data/projects.ts` now s
 - [x] **4C** — Light / dark theme toggle in nav + as a palette action; persisted via `next-themes`
 - [x] **4D** — CSP hardening with a dev-only `unsafe-eval` carve-out for React 19 callstack reconstruction
 - [ ] **4E** — Lighthouse + Core Web Vitals baseline captured and committed
-- [ ] **4F** — Bundle analysis pass; prune unused Radix primitives
+- [ ] **4F** — Bundle analysis pass (unused Radix primitives already pruned in **6H**)
 - [ ] **4G** — Optional MDX support for long-form project case studies
 
 ### Phase 5 — Project Depth Pass
@@ -321,6 +326,17 @@ Each project's `slug` becomes its URL. Every project in `data/projects.ts` now s
 - [x] **5H** — Drop the unsourced `Cites in papers` / `Full-text views` row from Research so the IEEE paper card stands on verifiable info alone
 - [x] **5I** — Refresh the GitHub-activity fallback list (add `fraud-radar`, `image-captioning-system`, `unhosted-core`, `plant-disease-detection`; drop stale entries)
 
+### Phase 6 — Evidence Pass
+
+- [x] **6A** — Re-check every project claim against its repository and every role against the current CV; remove contradicted or withdrawn figures, credit co-authors and collaborators, and give every metric its evaluation population
+- [x] **6B** — Single source of identity in `data/profile.ts` (name, title, employer, links, `SITE_URL`)
+- [x] **6C** — Replace the fixed five-heading case-study template with project-specific `sections`, plus `sources` and a facts-checked date on every case study
+- [x] **6D** — Per-page canonical URLs, per-project OG images and meta descriptions; JSON-LD `ScholarlyArticle` with every author
+- [x] **6E** — CI gate (lint · typecheck · build) and lint errors fixed
+- [x] **6F** — Raise `--ink-tertiary` to clear WCAG AA contrast on every surface, both themes
+- [x] **6G** — Keep the separate `game/` app out of this build (TypeScript, ESLint, Tailwind source scan)
+- [x] **6H** — Remove 37 verified-unused dependencies and the 55 generated shadcn files nothing imports (kept `@radix-ui/react-dialog` and `@radix-ui/react-slot`, which `cmdk` needs at runtime, and `zod`, which the ESLint React-hooks plugin needs)
+
 ---
 
 ## 🎨 Engineering Decisions
@@ -332,7 +348,7 @@ Each project's `slug` becomes its URL. Every project in `data/projects.ts` now s
 > Design tokens belong in CSS custom properties anyway — they need to flip with the theme, and they need to be inspectable in DevTools. v4's `@theme inline` block reads those properties and auto-generates utility classes from them, which collapses two sources of truth (config file + CSS variables) into one. There is no `tailwind.config.js` in this repo and there does not need to be.
 
 > **Why `data/*.ts` instead of MDX, Contentlayer, or a headless CMS?**
-> A portfolio that lives in version control is a portfolio that survives. Typed entries give us autocomplete on every field, the TypeScript compiler enforces shape on every project, the diff for a content edit is reviewable, and there is no third-party content service to outlive. MDX is a fine upgrade later for long-form case studies, but the structured fields (slug, year, category, stack, GitHub URL, demo URL) belong in TypeScript.
+> A portfolio that lives in version control is a portfolio that survives. Typed entries give us autocomplete on every field, the TypeScript compiler enforces shape on every project, the diff for a content edit is reviewable, and there is no third-party content service to outlive. MDX is a fine upgrade later for long-form case studies, but the structured fields (slug, period, status, stack, GitHub URL, demo URL, sources) belong in TypeScript.
 
 > **Why a typed `DESIGN.md` instead of a Figma link?**
 > Figma rots; committed specs do not. Capturing colors, typography, spacing, and motion as a structured spec in the repo means the design and the implementation can be diffed against each other, and the next redesign starts from a defensible baseline rather than vibes.
@@ -350,21 +366,23 @@ Each project's `slug` becomes its URL. Every project in `data/projects.ts` now s
 | Surface                            | Status     | Notes                                                                  |
 | ---------------------------------- | ---------- | ---------------------------------------------------------------------- |
 | Home page (9 sections)             | ✅ Live    | Hero · About · Experience · Projects · Research · Tech Stack · GitHub · Contact · Footer |
-| 6 typed projects with case studies | ✅ Live    | Fraud Radar · Image Captioning · Unhosted · Plant Disease · Diabetes Risk · Heart Disease — every entry carries `fullDetails` (problem / dataset / architecture / training / results) |
-| Project status badge               | ✅ Live    | `Live` / `In development` / `Pre-alpha` / `Published` shown as a colored dot inline with the year on each card |
-| Distinct project artwork           | ✅ Live    | Coral risk-gauge (Fraud Radar), lavender peer mesh (Unhosted), cyan image→caption scene (Image Captioning) — no repeat tiles in the grid |
+| 6 typed projects with case studies | ✅ Live    | Fraud Radar · Image Captioning · Plant Disease · Heart Disease · Unhosted · Diabetes Risk — project-specific sections, sources and a facts-checked date on each |
+| Project status badge               | ✅ Live    | `Live demo` / `Demo offline` / `Research stage` / `Earlier work` shown as a colored dot beside the period on each card |
+| Project artwork                    | ✅ Live    | Coral risk-gauge (Fraud Radar), lavender peer mesh (Unhosted), cyan image→caption scene (Image Captioning); the three earlier ML projects share a generic tile |
 | Per-project case study routes      | ✅ Live    | Statically generated via `generateStaticParams` from `data/projects.ts` |
-| Dynamic OG image                   | ✅ Live    | `app/opengraph-image.tsx` via `next/og` `ImageResponse`                |
+| OG images                          | ✅ Live    | Site-wide `app/opengraph-image.tsx` plus one per project, via `next/og` |
+| Canonical URLs                     | ✅ Live    | Set per page from `SITE_URL`                                            |
 | Sitemap                            | ✅ Live    | Auto-iterates typed project list                                        |
-| JSON-LD structured data            | ✅ Live    | Person · Organization · BreadcrumbList · ItemList                       |
+| JSON-LD structured data            | ✅ Live    | Person · Organization · ItemList · ScholarlyArticle                     |
 | GitHub Activity (ISR + fallback)   | ✅ Live    | `revalidate: 3600`, deterministic fallback list (refreshed to match real repos) |
 | Light / dark theme toggle          | ✅ Live    | `next-themes` class strategy, `dark` default, no system fallback        |
 | Global command palette (⌘K)        | ✅ Live    | `cmdk` + portal, three groups, focus restored on close, Esc/arrows/Enter |
 | Terminal hero card                 | ✅ Live    | Static mono panel + CSS cursor blink — replaces former portrait card    |
-| Content truth-pass                 | ✅ Live    | Every biographical claim verified against the résumé of record          |
-| CSP (with dev `unsafe-eval`)       | ✅ Live    | Production locked down; dev carve-out for React 19 callstack overlay    |
+| Evidence pass                      | ✅ Live    | Project claims checked against each repository and roles against the current CV (6A) |
+| CI gate                            | ✅ Live    | GitHub Actions: lint · typecheck · build on push and pull request       |
+| Security headers + CSP             | ✅ Live    | HSTS, frame, referrer and permissions headers; production CSP still allows `'unsafe-inline'` scripts (Next.js inline scripts without nonces); dev adds `unsafe-eval` |
 | Lighthouse baseline                | ⏳ Planned | Phase 4E — capture and commit alongside redesign                        |
-| Bundle analysis                    | ⏳ Planned | Phase 4F — prune unused Radix primitives                                |
+| Unused dependency removal          | ✅ Done    | 6H — 37 packages and 55 generated shadcn files removed; 12 dependencies remain |
 
 ---
 

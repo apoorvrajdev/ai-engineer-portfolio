@@ -32,10 +32,23 @@ Keep subject under 72 characters. Body optional but explains *why*, not *what*.
 - TypeScript is `strict: true` — no `any` escape hatches; type all props, data files, and helpers.
 - Use the path alias `@/*` for imports from the repo root.
 - Compose classes with `cn()` from `@/lib/utils`; do not hand-roll clsx/tailwind-merge logic.
-- Reach for the neo-brutalist primitives (`.brutal-card`, `.brutal-shadow`, `.btn-brutal`, `.highlight-*`) before writing new utility soup.
-- Content edits belong in `data/*.ts`, not in components.
+- Reach for the Linear primitives (`.linear-card`, `.linear-card-hover`, `.linear-card-featured`, `.btn-primary`, `.btn-secondary`, `.btn-tertiary`) before writing new utility soup. The `.brutal-*` / `.highlight-*` classes are compatibility aliases only — see the design-system section.
+- Content edits belong in `data/*.ts`, not in components. Identity facts (name, title, employer, links, email, availability, site URL) live only in `data/profile.ts`.
 - Anything stateful, themed, or animated (`useState`/`useEffect`/framer-motion/next-themes) must be `'use client'`. Keep data-fetching sections as server components and delegate UI to a client child (see `github-activity.tsx`).
-- `npm run build` runs `tsc` — builds fail on type errors. Run `npm run lint` and `npm run build` before suggesting a commit.
+- Don't call `setState` synchronously inside `useEffect` (the `react-hooks/set-state-in-effect` rule fails lint). For client-only rendering use `useMounted()` from `@/hooks/use-mounted`.
+- Run `npm run lint`, `npm run typecheck` and `npm run build` before suggesting a commit. CI (`.github/workflows/ci.yml`) runs the same three on every push to `main` and every pull request.
+
+## Content accuracy rules
+
+This site is checked by recruiters and engineers who will click through to the source. Every claim must survive that.
+
+- **Every metric names what it was measured on**: the dataset or population, the split, and the comparison. Never show a bare headline number.
+- **The repository is the source of truth for project facts; the current CV is the source of truth for titles and roles.** If they disagree, flag it — don't pick one silently.
+- **Credit collaborators by name**, state who did what, and link the original repository when the work is shared. Never present co-authored or collaborative work as solo work.
+- **Status must match the live URL** on the day it is written. A sleeping or broken demo is not "live"; use `Demo offline` or move the link to `sources` with a note.
+- **Counts go stale** — when a project quotes test counts or similar figures, update `factsCheckedOn` in `data/projects.ts` whenever you re-verify them.
+- **Never invent** metrics, users, traffic, adoption, calibration, production use, or capabilities that the linked repository does not prove. Withdrawn or leakage-affected results are explained, not quoted.
+- **Skills** are limited to what current work or the CV backs.
 
 ## Working Style
 
@@ -49,19 +62,22 @@ Keep subject under 72 characters. Body optional but explains *why*, not *what*.
 - `npm run dev` — start Next.js dev server
 - `npm run build` — production build (also runs `tsc`; build will fail on type errors)
 - `npm run start` — serve the production build
-- `npm run lint` — ESLint (flat config in `eslint.config.mjs`, composing `eslint-config-next/core-web-vitals` + `/typescript`). The `resource/` directory is ignored.
+- `npm run lint` — ESLint (flat config in `eslint.config.mjs`, composing `eslint-config-next/core-web-vitals` + `/typescript`). The `resource/` and `game/` directories are ignored.
+- `npm run typecheck` — `tsc --noEmit` on its own.
 
-There is no test suite configured.
+There is no test suite configured. CI runs lint, typecheck and build (`.github/workflows/ci.yml`).
 
 ## Build / config quirks worth knowing
 
 - `next.config.mjs` sets `images.unoptimized: true`, so `<img>` is used directly across the site. When adding new images, prefer `<img>` and silence the lint warning inline (`// eslint-disable-next-line @next/next/no-img-element`).
 - `tsconfig.json` excludes `resource/` (the Paperfolio inspiration template lives there but is not part of the app).
+- `game/` is a separate app with its own dependencies. It is excluded from `tsconfig.json`, ignored by ESLint, and kept out of Tailwind's source scan (`@source not "../game"` in `app/globals.css`), so it cannot break or bloat this build.
 - Tailwind **v4** is used in CSS-first mode (`@import 'tailwindcss'` in `app/globals.css`). There is no `tailwind.config.js` — design tokens are CSS custom properties in `:root` (dark canvas) and `.light` (inverted) blocks in `globals.css`. **Tailwind v4 auto-generates utilities from any `--color-*` declared in the `@theme inline` block**, which is how `bg-background`, `text-foreground`, `border-border`, etc. resolve.
 - `components.json` declares shadcn config: `style: new-york`, `baseColor: neutral`, `iconLibrary: lucide`, `rsc: true`. Add new primitives via `npx shadcn@latest add <name>` rather than hand-writing them under `components/ui/`.
 - Path alias: `@/*` resolves to the repo root (see `tsconfig.json`).
 - TS is `strict: true` with `target: ES6`, `moduleResolution: bundler`.
-- Canonical site URL is `https://ai-engineer-portfolio-pi.vercel.app` and is **hardcoded in three places** that must be updated together: `app/layout.tsx` (`metadataBase` + OG), `app/sitemap.ts` (`SITE_URL`), and `components/structured-data.tsx` (`SITE_URL`). The OG artwork in `app/opengraph-image.tsx` also bakes the URL into the image.
+- Canonical site URL is `https://ai-engineer-portfolio-pi.vercel.app`, defined once as `SITE_URL` in `data/profile.ts`. `app/layout.tsx` (`metadataBase`), `app/sitemap.ts`, `components/structured-data.tsx` and both OG images read it from there.
+- Canonical URLs are set per page (`alternates.canonical` in `app/page.tsx` and in the project `generateMetadata`), not in the root layout, so not-found and other routes don't inherit the home URL.
 
 ## Design system: Linear-inspired dark theme
 
@@ -70,7 +86,7 @@ The site has been migrated off the early Paperfolio neo-brutalist palette to a L
 - **Dark-first**: canvas `#010102`, surface ladder `#0f1011 → #1c1d1e`, hairline borders (`--hairline #23252a`), no drop shadows on dark. Light mode (toggled via the nav button) inverts onto a `#ffffff` canvas with `#e6e7e9` hairlines. There is no system theme fallback — `ThemeProvider` is configured with `defaultTheme="dark"`, `enableSystem={false}`, `storageKey="theme-preference"`.
 - **Single chromatic accent**: lavender `#5e6ad2` (`--accent`) is the only color used for emphasis, links, focus rings, and primary CTAs. `--accent-hover` `#828fff`, `--accent-focus` `#5e69d1`, `--accent-soft` `rgba(94,106,210,0.12)`.
 - **Typography**: Onest (sans) + JetBrains Mono (mono), loaded via `next/font/google` in `app/layout.tsx`. Exposed to Tailwind as `var(--font-onest)` and `var(--font-jetbrains-mono)`.
-- **Ink scale**: `--ink #f7f8f8`, `--ink-muted #d0d6e0`, `--ink-subtle #8a8f98`, `--ink-tertiary #62666d`.
+- **Ink scale**: `--ink #f7f8f8`, `--ink-muted #d0d6e0`, `--ink-subtle #8a8f98`, `--ink-tertiary #7a7f88` (light theme `#6b6e75`). Tertiary was raised from Linear's `#62666d` so small text clears WCAG AA (≥ 4.5:1) on every surface — don't lower it.
 
 ### Core utility classes (in `app/globals.css`)
 
@@ -104,13 +120,14 @@ This is a Next.js 16 App Router portfolio site (React 19, framer-motion, next-th
 
 ### Routing & layout
 
-- `app/layout.tsx` — root server layout. Loads Onest + JetBrains Mono via `next/font`, wraps the tree in `ThemeProvider` (next-themes, `class` attribute, `defaultTheme="dark"`, `enableSystem={false}`, `storageKey="theme-preference"`), and injects `<StructuredData />` JSON-LD into `<head>`. Site `metadata` (OG/Twitter/icons) lives here — update it alongside the URL constants noted above when changing branding.
+- `app/layout.tsx` — root server layout. Loads Onest + JetBrains Mono via `next/font`, wraps the tree in `ThemeProvider` (next-themes, `class` attribute, `defaultTheme="dark"`, `enableSystem={false}`, `storageKey="theme-preference"`), and injects `<StructuredData />` JSON-LD into `<head>`. Site `metadata` (OG/Twitter/icons) lives here and reads its values from `data/profile.ts`.
 - `app/template.tsx` — runs on every navigation; wraps children in `PageTransition` so route changes animate.
 - `app/page.tsx` — composes the home page from `components/sections/*` in display order. Reordering or adding a section is done here. **Note:** `components/sections/education.tsx` and `data/education.ts` exist but are **not currently mounted** in `app/page.tsx` or `navLinks`; wire both up if reintroducing the section.
-- `app/projects/[slug]/page.tsx` — **server** component. Calls `generateStaticParams()` from `data/projects.ts` so every project page is pre-rendered at build time, and exports `generateMetadata` for per-project OG/Twitter tags. Adding a project is purely a data change in `data/projects.ts`; the route and sitemap pick it up automatically. Missing slugs `notFound()`.
+- `app/projects/[slug]/page.tsx` — **server** component. Calls `generateStaticParams()` from `data/projects.ts` so every project page is pre-rendered at build time, and exports `generateMetadata` for per-project description (`shortDescription`), canonical URL and OG/Twitter tags. Adding a project is purely a data change in `data/projects.ts`; the route, share image and sitemap pick it up automatically. Missing slugs `notFound()`.
+- `app/projects/[slug]/opengraph-image.tsx` — per-project share image generated at build time from the project's `shortTitle`, `shortDescription`, `status` and `period`. It supplies `og:image`; a config-based `openGraph` in `generateMetadata` would otherwise drop the inherited image.
 - `app/projects/[slug]/project-page-client.tsx` — the interactive client half of the project detail page (framer-motion, scroll, etc.). The server `page.tsx` resolves the project and renders this with the project as a prop.
-- `app/sitemap.ts` — generates the sitemap by iterating `projects` from `data/projects.ts`. Uses `SITE_URL` (see hardcoded-URL note above).
-- `app/opengraph-image.tsx` — dynamic OG image via `next/og` `ImageResponse`. The site URL string is duplicated in the bottom-right of the image; update it when the canonical URL changes.
+- `app/sitemap.ts` — generates the sitemap by iterating `projects` from `data/projects.ts`, using `SITE_URL` from `data/profile.ts`.
+- `app/opengraph-image.tsx` — site-wide OG image via `next/og` `ImageResponse`, with text taken from `data/profile.ts`.
 - `app/globals.css` — see the **Design system** section above.
 
 ### Components
@@ -122,24 +139,26 @@ This is a Next.js 16 App Router portfolio site (React 19, framer-motion, next-th
 - `components/motion/*` — `Reveal` (the standard scroll reveal; also exports `staggerContainer` and `revealItem` variants) and `PageTransition`. Neither currently consults `useReducedMotion()` — see the design-system gaps note above.
 - `components/scroll-progress.tsx` — top-of-page scroll progress bar (lavender accent fill); mounted once in `app/page.tsx` above `<Navigation />`.
 - `components/command-palette.tsx` — global ⌘K / Ctrl+K / `?` palette built on `cmdk` and rendered through a portal. Three groups (Navigate · Links · Actions), substring filter, focus restored on close, body scroll locked while open, `role="dialog"` + `aria-modal="true"` + `aria-label="Command palette"`.
-- `components/theme-toggle.tsx` — Sun ⇄ Moon button wired through `next-themes`. Hydration-safe via a `mounted` guard.
-- `components/project-card.tsx` — hairline-bordered project card with a category-tinted header swatch, GitHub/demo icon buttons, status dot, and a "View case study" link to `/projects/[slug]`.
-- `components/ui/*` — shadcn/ui primitives. Treat as generated; consume via `cn()` from `@/lib/utils`.
-- `components/structured-data.tsx` — JSON-LD (Person/Organization/Breadcrumb/ItemList). Keep in sync with `app/layout.tsx` metadata.
+- `components/theme-toggle.tsx` — Sun ⇄ Moon button wired through `next-themes`. Hydration-safe via `useMounted()` (`hooks/use-mounted.ts`, a `useSyncExternalStore` guard).
+- `components/project-card.tsx` — hairline-bordered project card with a category-tinted header swatch, GitHub/demo icon buttons, status dot, period, and a "Case study" link to `/projects/[slug]`.
+- `components/ui/*` — shadcn/ui primitives, added on demand with `npx shadcn@latest add <name>` (none are installed at present). Treat them as generated; consume via `cn()` from `@/lib/utils`.
+- `components/structured-data.tsx` — JSON-LD (Person, Organization, ItemList of projects, ScholarlyArticle per paper with every author), built from `data/profile.ts`, `data/projects.ts` and `data/research.ts`.
 
 ### GitHub activity (server + client split)
 
-`components/sections/github-activity.tsx` is an `async` server component. It fetches `api.github.com/users/<GITHUB_USER>/repos?sort=updated` with `next: { revalidate: 3600 }` (ISR every hour), falls back to a hardcoded `fallbackRepositories` list on any failure, then passes results to the `'use client'` `github-activity-client.tsx` for the interactive UI. **When changing the GitHub username, update `GITHUB_USER` and the `fallbackRepositories` list together** — the fallback names also define the display order (the fetched URLs are merged by name).
+`components/sections/github-activity.tsx` is an `async` server component. It fetches `api.github.com/users/<GITHUB_USER>/repos?sort=updated` with `next: { revalidate: 3600 }` (ISR every hour), falls back to a hardcoded `fallbackRepositories` list on any failure, then passes results to the `'use client'` `github-activity-client.tsx` for the interactive UI. `GITHUB_USER` comes from `profile.githubUser`; **when changing the GitHub username, update the `fallbackRepositories` list too** — the fallback names also define the display order (the fetched URLs are merged by name).
 
 ### Content / data layer
 
 `data/*.ts` is the single source of truth for site content. **Editing content is almost always a data-file change, not a component change.**
 
-- `projects.ts` exports a typed `Project[]`. Each project's `slug` is the URL segment under `/projects/`. The optional `fullDetails` block (problem / dataset / architecture / training / results) is what the project detail page renders into the per-project sections — each rendered with a different highlight-color swatch. Without `fullDetails`, the detail page renders only the header. Adding a project also extends the sitemap (`app/sitemap.ts`) and static params automatically.
-- `experience.ts`, `education.ts`, `research.ts`, `skills.ts` — analogous, consumed by the matching section components.
+- `profile.ts` — identity facts (`profile`, `SITE_URL`, `currentRole`) consumed by metadata, JSON-LD, OG images, hero, navigation, about, contact, footer and the command palette.
+- `projects.ts` exports a typed `Project[]` in display order. Each project's `slug` is the URL segment under `/projects/` (don't rename slugs — they are linked from outside). Key fields: `tier` (`flagship` / `secondary` / `earlier`), `role` (`solo` / `collaboration` / `contribution`), `status`, `period`, `shortDescription` (≤ 160 chars; card blurb and meta description), `description` (case-study lede), `sections` (project-specific `{ heading, body?, points? }` blocks rendered in order — no fixed template), `sources` (evidence links shown at the end of the case study) and `factsCheckedOn`. Adding a project also extends the sitemap, share images and static params automatically.
+- `research.ts` — publications with the full author list in published order, DOI and publisher link.
+- `experience.ts`, `education.ts`, `skills.ts` — analogous, consumed by the matching section components (`about.tsx` reads `education.ts` for its education card).
 
 ### Conventions
 
 - Anything using framer-motion, `useState`/`useEffect`, or theme state must be a client component (`'use client'`). Sections that need server-side data (e.g. `github-activity.tsx`) stay server and delegate UI to a client child.
 - Use `cn()` from `@/lib/utils` for conditional class composition (clsx + tailwind-merge).
-- Prefer the neo-brutalist primitives (`.brutal-card`, `.brutal-shadow`, `.btn-brutal`, `.highlight-*`) over hand-rolling equivalents — the visual language depends on consistency.
+- Prefer the Linear primitives (`.linear-card*`, `.btn-*`) over hand-rolling equivalents — the visual language depends on consistency.
