@@ -12,8 +12,8 @@ export function ResearchSection() {
       <SectionHeading
         eyebrow="Research"
         title="Multimodal AI,"
-        highlight="peer-reviewed."
-        description="Published research on architectures bridging visual encoders and Transformer-based decoders — IEEE-indexed."
+        highlight="co-authored."
+        description="A co-authored IEEE conference paper on image captioning with a CNN visual encoder and a Transformer decoder."
       />
 
       <div className="mt-12 space-y-3">
@@ -52,9 +52,9 @@ export function ResearchSection() {
             <p className="mt-4 body-default text-ink-muted">{paper.abstract}</p>
 
             <div className="mt-5 flex flex-wrap gap-5 border-t border-hairline pt-4">
-              {paper.arxiv ? (
+              {paper.link ? (
                 <a
-                  href={paper.arxiv}
+                  href={paper.link}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink hover:text-accent transition-colors"

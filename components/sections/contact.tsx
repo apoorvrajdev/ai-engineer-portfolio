@@ -4,24 +4,25 @@ import { motion } from 'framer-motion'
 import { ArrowUpRight, Github, Linkedin, Mail } from 'lucide-react'
 import { SectionWrapper } from '@/components/section-wrapper'
 import { SectionHeading } from '@/components/section-heading'
+import { profile } from '@/data/profile'
 
 const socialLinks = [
   {
     label: 'Email',
-    handle: 'apoorvrajmgr@gmail.com',
-    href: 'mailto:apoorvrajmgr@gmail.com',
+    handle: profile.email,
+    href: `mailto:${profile.email}`,
     icon: Mail,
   },
   {
     label: 'LinkedIn',
-    handle: '/in/apoorv-raj-1a35ba218',
-    href: 'https://www.linkedin.com/in/apoorv-raj-1a35ba218/',
+    handle: profile.links.linkedinHandle,
+    href: profile.links.linkedin,
     icon: Linkedin,
   },
   {
     label: 'GitHub',
-    handle: 'github.com/apoorvrajdev',
-    href: 'https://github.com/apoorvrajdev',
+    handle: `github.com/${profile.githubUser}`,
+    href: profile.links.github,
     icon: Github,
   },
 ] as const
@@ -33,7 +34,7 @@ export function ContactSection() {
         eyebrow="Contact"
         title="Building something"
         highlight="serious?"
-        description="Open to elite AI engineering roles, founding-engineer work, and research collaboration. If the system has to ship under real load — let&rsquo;s talk."
+        description="Open to software, AI and ML engineering roles, and to applied-ML and data-intensive systems work. Email is the fastest way to reach me."
       />
 
       <div className="mt-12 grid items-stretch gap-3 md:grid-cols-[1.2fr_1fr]">
@@ -52,12 +53,12 @@ export function ContactSection() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <a href="mailto:apoorvrajmgr@gmail.com" className="btn-primary btn-primary-lg">
+            <a href={`mailto:${profile.email}`} className="btn-primary btn-primary-lg">
               <Mail className="h-4 w-4" />
-              apoorvrajmgr@gmail.com
+              {profile.email}
             </a>
             <a
-              href="/resume.pdf"
+              href={profile.links.resume}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-secondary btn-secondary-lg"

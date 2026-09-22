@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
 import { ArrowRight, ArrowUpRight } from 'lucide-react'
+import { profile } from '@/data/profile'
 
 // Client-only canvas background — lazy-loaded so it never ships in the SSR
 // payload and can't cause hydration mismatches.
@@ -11,51 +11,9 @@ const DotField = dynamic(() => import('@/components/dot-field').then(m => m.DotF
   ssr: false,
 })
 
-const BUILDS = [
-  'real-time fraud systems',
-  'multimodal AI pipelines',
-  'distributed LLM inference',
-  'clinical decision support',
-  'AI-native cloud platforms',
-] as const
-
-// Typewriter cycle: type → pause → delete → next word → repeat
-function useTypewriter(words: readonly string[], typeMs = 80, deleteMs = 45, holdMs = 1400) {
-  const [text, setText] = useState(words[0])
-  const [wordIndex, setWordIndex] = useState(0)
-  const [phase, setPhase] = useState<'holding' | 'deleting' | 'typing'>('holding')
-
-  useEffect(() => {
-    const current = words[wordIndex]
-    let t: ReturnType<typeof setTimeout>
-
-    if (phase === 'holding') {
-      t = setTimeout(() => setPhase('deleting'), holdMs)
-    } else if (phase === 'deleting') {
-      if (text.length > 0) {
-        t = setTimeout(() => setText(current.slice(0, text.length - 1)), deleteMs)
-      } else {
-        const next = (wordIndex + 1) % words.length
-        setWordIndex(next)
-        setPhase('typing')
-      }
-    } else {
-      const target = words[wordIndex]
-      if (text.length < target.length) {
-        t = setTimeout(() => setText(target.slice(0, text.length + 1)), typeMs)
-      } else {
-        setPhase('holding')
-      }
-    }
-    return () => clearTimeout(t)
-  }, [text, wordIndex, phase, words, typeMs, deleteMs, holdMs])
-
-  return text
-}
+const { employer } = profile
 
 export function HeroSection() {
-  const building = useTypewriter(BUILDS)
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -94,33 +52,26 @@ export function HeroSection() {
             <motion.div variants={itemVariants} className="inline-flex items-center gap-2">
               <span className="status-pill">
                 <span className="dot" />
-                Available for new work
+                {profile.availability}
               </span>
             </motion.div>
 
             <motion.h1
               variants={itemVariants}
               className="display-xl text-ink max-w-[28ch] text-balance"
-              aria-label="Building production-grade ML systems, end to end."
             >
-              Building{' '}
-              <span className="accent-phrase">
-                <span aria-hidden>{building}</span>
-                <span
-                  className="terminal-cursor ml-1 inline-block h-[0.8em] w-[0.06em] translate-y-[0.04em] bg-accent align-baseline"
-                  aria-hidden
-                />
-              </span>
-              , end to end.
+              Building ML systems end to end,{' '}
+              <span className="accent-phrase">and checking that they work.</span>
             </motion.h1>
 
             <motion.p
               variants={itemVariants}
               className="subhead max-w-[58ch]"
             >
-              I&apos;m Apoorv Raj — AI Engineer at Node2.io, IEEE-published on multimodal
-              vision-language models. I work the full ML stack: model development, data pipelines,
-              REST APIs, and CI/CD-integrated deployment.
+              I&apos;m {profile.name} — {profile.title} (contract) at {employer.name}, building the AI
+              layer of {employer.product}, a {employer.productKind}. Co-author of an IEEE paper on
+              image captioning, and builder of Fraud Radar, a fraud-detection system that reports
+              where its own model fails.
             </motion.p>
 
             <motion.div
@@ -151,11 +102,11 @@ export function HeroSection() {
             >
               <span className="inline-flex items-center gap-2">
                 <span className="h-1 w-1 rounded-full bg-ink-tertiary" />
-                AI Engineer · Node2.io
+                {profile.title} · {employer.name}
               </span>
               <span className="inline-flex items-center gap-2">
                 <span className="h-1 w-1 rounded-full bg-ink-tertiary" />
-                India · Remote
+                {profile.location}
               </span>
             </motion.div>
           </motion.div>
@@ -176,17 +127,17 @@ export function HeroSection() {
                   <span className="h-2.5 w-2.5 rounded-full bg-hairline-strong" />
                   <span className="h-2.5 w-2.5 rounded-full bg-hairline-strong" />
                 </div>
-                <span className="mono text-ink-tertiary">~/apoorv-raj</span>
+                <span className="mono text-ink-tertiary">~/{profile.name.toLowerCase().replace(' ', '-')}</span>
               </div>
 
               {/* Body: terminal lines */}
               <div className="font-mono px-5 py-5 text-[13px] leading-[1.65] space-y-0.5">
                 <p className="text-ink-tertiary">$ whoami</p>
-                <p className="text-ink">ai engineer · node2.io</p>
+                <p className="text-ink">{`${profile.title} · ${employer.name}`.toLowerCase()}</p>
                 <p className="text-ink-tertiary pt-2">$ stack</p>
-                <p className="text-ink">python · tensorflow · pytorch · fastapi</p>
+                <p className="text-ink">{profile.coreStack.join(' · ').toLowerCase()}</p>
                 <p className="text-ink-tertiary pt-2">$ status</p>
-                <p className="text-accent">open to opportunities</p>
+                <p className="text-accent">{profile.availability.toLowerCase()}</p>
                 <p className="pt-3 text-ink-tertiary">$ help</p>
                 <p className="text-ink">
                   press <span className="text-accent">⌘K</span> (Mac) /{' '}

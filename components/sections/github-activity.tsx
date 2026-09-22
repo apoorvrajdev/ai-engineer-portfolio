@@ -1,8 +1,9 @@
 import { SectionWrapper } from '@/components/section-wrapper'
 import { SectionHeading } from '@/components/section-heading'
+import { profile } from '@/data/profile'
 import { GithubActivityClient, type Repository, type StatIconName } from './github-activity-client'
 
-const GITHUB_USER = 'apoorvrajdev'
+const GITHUB_USER = profile.githubUser
 
 const fallbackRepositories: Repository[] = [
   { name: 'fraud-radar', href: `https://github.com/${GITHUB_USER}/fraud-radar` },

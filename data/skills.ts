@@ -3,30 +3,27 @@ export interface SkillCategory {
   skills: string[]
 }
 
+// Only skills backed by the current CV or a public repository. Tools that
+// appear once historically, or that no current work uses, stay off the list.
 export const skills: SkillCategory[] = [
   {
     category: 'Languages',
-    skills: ['Python', 'TypeScript', 'Rust', 'SQL', 'Bash'],
+    skills: ['Python', 'TypeScript', 'JavaScript', 'SQL'],
   },
   {
-    category: 'Machine Learning & AI',
+    category: 'Machine Learning',
     skills: [
-      'PyTorch',
-      'TensorFlow',
-      'Keras',
-      'Scikit-learn',
       'XGBoost',
+      'scikit-learn',
       'SHAP',
-      'Transformer',
-      'InceptionV3',
-      'EfficientNetB0',
-      'SMOTE',
-      'Generative AI',
-      'NLP',
+      'TensorFlow / Keras',
+      'pandas',
+      'NumPy',
+      'LLM tool calling (LangChain)',
     ],
   },
   {
-    category: 'Backend & APIs',
+    category: 'Backend & Data',
     skills: [
       'FastAPI',
       'Pydantic v2',
@@ -34,38 +31,20 @@ export const skills: SkillCategory[] = [
       'Alembic',
       'PostgreSQL',
       'SQLite',
-      'structlog',
-      'Uvicorn',
-      'REST',
+      'Prisma',
+      'REST API design',
     ],
   },
   {
     category: 'Frontend',
-    skills: ['React 19', 'Next.js', 'Vite', 'Tailwind CSS', 'TanStack Query', 'Recharts', 'framer-motion'],
+    skills: ['React 19', 'Next.js (App Router)', 'TanStack Query', 'Tailwind CSS', 'Accessible UI'],
   },
   {
-    category: 'Data & Pipelines',
-    skills: ['Pandas', 'NumPy', 'Feature Engineering', 'Model Evaluation', 'SMOTE', 'Faker'],
+    category: 'Testing & Quality',
+    skills: ['pytest', 'Jest', 'mypy', 'Ruff', 'ESLint', 'pre-commit', 'Code review'],
   },
   {
-    category: 'Serving & Deployment',
-    skills: [
-      'Streamlit',
-      'Gradio',
-      'Hugging Face Spaces',
-      'Vercel',
-      'Docker',
-      'Podman',
-      'CI/CD',
-      'GitHub Actions',
-    ],
-  },
-  {
-    category: 'Quality & Testing',
-    skills: ['pytest', 'mypy (strict)', 'Ruff', 'ESLint', 'pre-commit', 'nbstripout'],
-  },
-  {
-    category: 'Tools & Platforms',
-    skills: ['Git', 'GitHub', 'Linux', 'AWS', 'uv', 'npm'],
+    category: 'Delivery',
+    skills: ['GitHub Actions', 'Docker', 'Vercel', 'Hugging Face Hub', 'Streamlit', 'Git', 'Linux'],
   },
 ]

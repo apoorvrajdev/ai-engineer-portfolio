@@ -5,6 +5,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { SectionWrapper } from '@/components/section-wrapper'
 import { SectionHeading } from '@/components/section-heading'
 import { experience } from '@/data/experience'
+import { profile } from '@/data/profile'
 
 export function ExperienceSection() {
   return (
@@ -15,10 +16,10 @@ export function ExperienceSection() {
             eyebrow="Career"
             title="From research to"
             highlight="applied AI engineering."
-            description="IEEE-published research, an early ML internship, and founding-era work at Node2 — building production ML systems end to end."
+            description="A co-authored IEEE paper, an ML engineering internship, and founding-contributor work at Node2.io on a PropTech SaaS and its AI layer."
           />
           <a
-            href="/resume.pdf"
+            href={profile.links.resume}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-8 btn-secondary btn-secondary-lg"

@@ -25,17 +25,15 @@ const itemVariants = {
   },
 }
 
-const sections: Array<{
-  key: keyof NonNullable<Project['fullDetails']>
-  title: string
-  label: string
-}> = [
-  { key: 'problem', title: 'Problem statement', label: '01' },
-  { key: 'dataset', title: 'Dataset & data', label: '02' },
-  { key: 'architecture', title: 'Architecture & design', label: '03' },
-  { key: 'training', title: 'Training pipeline', label: '04' },
-  { key: 'results', title: 'Results & performance', label: '05' },
-]
+// Fixed locale and time zone so server and client render the same string.
+function formatCheckedDate(iso: string) {
+  return new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  })
+}
 
 export function ProjectPageClient({ project }: { project: Project }) {
   return (
@@ -83,7 +81,9 @@ export function ProjectPageClient({ project }: { project: Project }) {
           <motion.div variants={itemVariants} className="mb-12">
             <div className="mb-6 flex flex-wrap items-center gap-3">
               <span className="pill-tag">{project.category}</span>
-              <span className="mono text-ink-tertiary">{project.year}</span>
+              <span className="mono text-ink-tertiary">
+                {project.status} · {project.period}
+              </span>
             </div>
             <h1 className="display-lg text-ink text-balance">{project.title}</h1>
             <p className="mt-6 max-w-3xl subhead">{project.description}</p>
@@ -108,25 +108,60 @@ export function ProjectPageClient({ project }: { project: Project }) {
             </div>
           </motion.div>
 
-          {project.fullDetails ? (
-            <div className="space-y-3">
-              {sections.map((section) => (
-                <motion.section
-                  key={section.key}
-                  variants={itemVariants}
-                  className="linear-card p-6 md:p-8"
-                >
-                  <div className="flex items-baseline gap-4 border-b border-hairline pb-5">
-                    <span className="mono text-accent">{section.label}</span>
-                    <h2 className="headline text-ink">{section.title}</h2>
-                  </div>
-                  <p className="mt-6 body-lg text-ink-muted">
-                    {project.fullDetails?.[section.key]}
+          <div className="space-y-3">
+            {project.sections.map((section, index) => (
+              <motion.section
+                key={section.heading}
+                variants={itemVariants}
+                className="linear-card p-6 md:p-8"
+              >
+                <div className="flex items-baseline gap-4 border-b border-hairline pb-5">
+                  <span className="mono text-accent">{String(index + 1).padStart(2, '0')}</span>
+                  <h2 className="headline text-ink">{section.heading}</h2>
+                </div>
+                {section.body?.map((paragraph) => (
+                  <p key={paragraph} className="mt-6 body-lg text-ink-muted">
+                    {paragraph}
                   </p>
-                </motion.section>
-              ))}
-            </div>
-          ) : null}
+                ))}
+                {section.points ? (
+                  <ul className="mt-6 space-y-3">
+                    {section.points.map((point) => (
+                      <li key={point} className="flex items-start gap-3 body-default text-ink-muted">
+                        <span className="mt-2.5 inline-block h-1 w-1 shrink-0 rounded-full bg-ink-tertiary" aria-hidden />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </motion.section>
+            ))}
+
+            <motion.section variants={itemVariants} className="linear-card p-6 md:p-8">
+              <div className="border-b border-hairline pb-5">
+                <h2 className="headline text-ink">Sources</h2>
+              </div>
+              <ul className="mt-6 space-y-3">
+                {project.sources.map((source) => (
+                  <li key={source.url} className="flex flex-wrap items-baseline gap-x-2 gap-y-1 body-default">
+                    <a
+                      href={source.url}
+                      target={source.url.startsWith('http') ? '_blank' : undefined}
+                      rel={source.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      className="inline-flex items-center gap-1.5 font-medium text-ink transition-colors hover:text-accent"
+                    >
+                      {source.label}
+                      <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
+                    </a>
+                    {source.note ? <span className="mono text-ink-tertiary">{source.note}</span> : null}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-6 caption">
+                Checked against the repositories on {formatCheckedDate(project.factsCheckedOn)}.
+              </p>
+            </motion.section>
+          </div>
         </motion.div>
       </main>
     </>

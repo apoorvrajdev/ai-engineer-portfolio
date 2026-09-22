@@ -10,11 +10,11 @@ interface ProjectCardProps {
   index?: number
 }
 
-const statusDotClass: Record<NonNullable<Project['status']>, string> = {
-  Live: 'bg-[var(--success)]',
-  'In development': 'bg-accent',
-  'Pre-alpha': 'bg-ink-subtle',
-  Published: 'bg-accent',
+const statusDotClass: Record<Project['status'], string> = {
+  'Live demo': 'bg-[var(--success)]',
+  'Demo offline': 'bg-ink-subtle',
+  'Research stage': 'bg-accent',
+  'Earlier work': 'bg-ink-subtle',
 }
 
 export function ProjectCard({ project, index = 0 }: Readonly<ProjectCardProps>) {
@@ -49,17 +49,15 @@ export function ProjectCard({ project, index = 0 }: Readonly<ProjectCardProps>) 
               <span className="pill-tag">{project.category}</span>
             </div>
             <div className="absolute right-4 top-4 inline-flex items-center gap-2 mono text-ink-subtle">
-              {project.status ? (
-                <span className="inline-flex items-center gap-1.5">
-                  <span
-                    className={`h-1.5 w-1.5 rounded-full ${statusDotClass[project.status]}`}
-                    aria-hidden
-                  />
-                  <span>{project.status}</span>
-                  <span aria-hidden>·</span>
-                </span>
-              ) : null}
-              <span>{project.year}</span>
+              <span className="inline-flex items-center gap-1.5">
+                <span
+                  className={`h-1.5 w-1.5 rounded-full ${statusDotClass[project.status]}`}
+                  aria-hidden
+                />
+                <span>{project.status}</span>
+                <span aria-hidden>·</span>
+              </span>
+              <span>{project.period}</span>
             </div>
           </div>
         </Link>

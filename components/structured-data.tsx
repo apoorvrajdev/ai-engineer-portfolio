@@ -1,71 +1,40 @@
 import { projects } from '@/data/projects'
-
-const SITE_URL = 'https://ai-engineer-portfolio-pi.vercel.app'
+import { SITE_URL, profile } from '@/data/profile'
+import { researchPapers } from '@/data/research'
 
 export function StructuredData() {
   const personSchema = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: 'Apoorv Raj',
+    name: profile.name,
     url: SITE_URL,
-    email: 'apoorvrajmgr@gmail.com',
+    email: profile.email,
     image: `${SITE_URL}/opengraph-image`,
-    sameAs: [
-      'https://www.linkedin.com/in/apoorv-raj-1a35ba218/',
-      'https://github.com/apoorvrajdev',
-    ],
-    jobTitle: 'AI Engineer',
-    affiliation: {
+    sameAs: [profile.links.linkedin, profile.links.github],
+    jobTitle: profile.title,
+    worksFor: {
       '@type': 'Organization',
-      name: 'Node2.io',
+      name: profile.employer.name,
     },
     knowsAbout: [
       'Machine Learning',
-      'Deep Learning',
-      'Computer Vision',
-      'Natural Language Processing',
+      'Model Evaluation',
+      'Software Engineering',
       'Full-Stack Development',
-      'PyTorch',
-      'TensorFlow',
-      'Research & Publication',
+      'Python',
+      'TypeScript',
+      'FastAPI',
+      'React',
     ],
   }
 
   const organizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Apoorv Raj Portfolio',
+    name: `${profile.name} Portfolio`,
     url: SITE_URL,
     logo: `${SITE_URL}/icon.svg`,
-    sameAs: [
-      'https://www.linkedin.com/in/apoorv-raj-1a35ba218/',
-      'https://github.com/apoorvrajdev',
-    ],
-  }
-
-  const breadcrumbSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Home',
-        item: SITE_URL,
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'Projects',
-        item: `${SITE_URL}#projects`,
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: 'Research',
-        item: `${SITE_URL}#research`,
-      },
-    ],
+    sameAs: [profile.links.linkedin, profile.links.github],
   }
 
   const projectsSchema = {
@@ -75,37 +44,36 @@ export function StructuredData() {
       '@type': 'CreativeWork',
       position: index + 1,
       name: project.title,
-      description: project.description,
+      description: project.shortDescription,
       url: `${SITE_URL}/projects/${project.slug}`,
     })),
   }
 
+  const publicationsSchema = researchPapers.map((paper) => ({
+    '@context': 'https://schema.org',
+    '@type': 'ScholarlyArticle',
+    headline: paper.title,
+    author: paper.authors.map((name) => ({ '@type': 'Person', name })),
+    datePublished: paper.published ?? String(paper.year),
+    isPartOf: { '@type': 'CreativeWork', name: paper.conference },
+    publisher: { '@type': 'Organization', name: 'IEEE' },
+    ...(paper.doi ? { sameAs: `https://doi.org/${paper.doi}` } : {}),
+    ...(paper.link ? { url: paper.link } : {}),
+  }))
+
+  const schemas = [personSchema, organizationSchema, projectsSchema, ...publicationsSchema]
+
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(personSchema),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(organizationSchema),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbSchema),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(projectsSchema),
-        }}
-      />
+      {schemas.map((schema, index) => (
+        <script
+          key={index}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(schema),
+          }}
+        />
+      ))}
     </>
   )
 }

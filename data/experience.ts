@@ -10,38 +10,36 @@ export interface ExperienceItem {
   highlights: string[]
 }
 
+// Mirrors the current CV. Node2.io work is private, so keep the wording exactly
+// as specific as the CV and no more.
 export const experience: ExperienceItem[] = [
   {
     id: 'node2-ai-engineer',
     role: 'AI Engineer',
     company: 'Node2.io',
-    focus: 'AI-native cloud platform · Remote (Canada-based company)',
+    focus:
+      'Independent contractor · Software Engineer (Founding Contributor) · PropTech SaaS (BuildingSync) · Remote, Canada',
     startYear: 2026,
     endYear: 'Present',
     startMonth: 'Jan',
     highlights: [
-      'Contributed to development of an AI-native cloud platform for intelligent property and infrastructure management, supporting real-time operational workflows, role-based access systems, and scalable SaaS architecture.',
-      'Designed and optimized scalable backend APIs and modular application services using modern web architecture principles, improving system performance and maintainability.',
-      'Developed and integrated AI-assisted automation workflows for operational reporting, documentation generation, and intelligent system management using LLM-based tooling.',
-      'Built and maintained PostgreSQL-integrated data workflows, authentication systems, and cloud-connected application infrastructure supporting multi-tenant production environments.',
-      'Contributed to CI/CD pipelines, containerized deployment workflows, and production reliability processes using Git-based development and automated validation tooling.',
-      'Worked extensively in Linux-based environments — debugging, troubleshooting, performance monitoring, and root-cause analysis for distributed application systems.',
+      'Ship resident- and staff-facing product features across a commercial Next.js (App Router) + TypeScript codebase — UI components through Prisma data-access modules to PostgreSQL (Supabase) under Row-Level Security.',
+      'Built accessibility features for the resident-facing product — large-text and high-contrast display modes — and keep interactive components keyboard-accessible.',
+      'Build the platform’s AI layer as a Python FastAPI service — an LLM booking assistant (LangChain tool calling against a 50+ slot schema, structured response validation, voice interface in development) plus a complaint-prioritization engine.',
+      'Contribute code reviews, Jest unit/integration suites, CI/CD pipelines, Docker deployments, and Linux debugging in Agile sprints, collaborating remotely with a Canada-based team across time zones.',
     ],
   },
   {
     id: 'quicksilver-ml-intern',
-    role: 'ML Engineer Intern',
+    role: 'ML Engineering Intern',
     company: 'Quicksilver Technologies Pvt. Ltd.',
-    focus: 'ML evaluation infrastructure · India',
+    focus: 'India',
     startYear: 2023,
     endYear: 2023,
     startMonth: 'May',
     endMonth: 'Jul',
     highlights: [
-      'Developed Python-based automation scripts and reusable data processing pipelines for ML evaluation, validation, and backtesting workflows.',
-      'Built modular preprocessing and testing workflows aligned with software engineering best practices, improving reproducibility and execution efficiency.',
-      'Implemented validation and debugging processes to ensure correctness, reliability, and consistency across ML experimentation pipelines.',
-      'Leveraged LLM-assisted tooling for experiment summarization, workflow documentation, and internal reporting automation.',
+      'Supported software-validation workflows with Python data-processing scripts, debugging utilities, and basic unit tests.',
     ],
   },
 ]

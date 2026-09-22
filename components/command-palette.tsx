@@ -13,10 +13,13 @@ import {
   Github,
   Linkedin,
   Mail,
-  Moon,
   Search,
   Sun,
 } from 'lucide-react'
+import { profile } from '@/data/profile'
+import { projects } from '@/data/projects'
+import { researchPapers } from '@/data/research'
+import { useMounted } from '@/hooks/use-mounted'
 
 type Action =
   | { kind: 'scroll'; targetId: string }
@@ -34,7 +37,21 @@ type Item = {
 
 type Group = { heading: string; items: Item[] }
 
-const EMAIL = 'apoorvrajmgr@gmail.com'
+const EMAIL = profile.email
+const flagshipDemo = projects.find((p) => p.tier === 'flagship' && p.demo)
+const paper = researchPapers[0]
+
+const linkItems: Item[] = [
+  { id: 'link-github', label: 'GitHub', icon: Github, action: { kind: 'link', href: profile.links.github } },
+  { id: 'link-linkedin', label: 'LinkedIn', icon: Linkedin, action: { kind: 'link', href: profile.links.linkedin } },
+  ...(paper?.link
+    ? [{ id: 'link-ieee', label: 'IEEE Paper', icon: ExternalLink, action: { kind: 'link', href: paper.link } } satisfies Item]
+    : []),
+  ...(flagshipDemo?.demo
+    ? [{ id: 'link-demo', label: `${flagshipDemo.shortTitle} Demo`, icon: ExternalLink, action: { kind: 'link', href: flagshipDemo.demo } } satisfies Item]
+    : []),
+  { id: 'link-resume', label: 'Résumé (PDF)', icon: FileText, action: { kind: 'link', href: profile.links.resume } },
+]
 
 const groups: Group[] = [
   {
@@ -50,13 +67,7 @@ const groups: Group[] = [
   },
   {
     heading: 'Links',
-    items: [
-      { id: 'link-github', label: 'GitHub', icon: Github, action: { kind: 'link', href: 'https://github.com/apoorvrajdev' } },
-      { id: 'link-linkedin', label: 'LinkedIn', icon: Linkedin, action: { kind: 'link', href: 'https://www.linkedin.com/in/apoorv-raj-1a35ba218/' } },
-      { id: 'link-ieee', label: 'IEEE Paper', icon: ExternalLink, action: { kind: 'link', href: 'https://ieeexplore.ieee.org/document/10675203' } },
-      { id: 'link-demo', label: 'Plant Disease Demo', icon: ExternalLink, action: { kind: 'link', href: 'https://huggingface.co/spaces/workface/plant-disease-detection' } },
-      { id: 'link-resume', label: 'Résumé (PDF)', icon: FileText, action: { kind: 'link', href: '/resume.pdf' } },
-    ],
+    items: linkItems,
   },
   {
     heading: 'Actions',
@@ -68,17 +79,21 @@ const groups: Group[] = [
   },
 ]
 
-const allItems = groups.flatMap((g) => g.items)
-
 export function CommandPalette() {
   const [open, setOpen] = useState(false)
-  const [mounted, setMounted] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [prevOpen, setPrevOpen] = useState(open)
+  const mounted = useMounted()
   const lastFocusedRef = useRef<HTMLElement | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const { resolvedTheme, setTheme } = useTheme()
 
-  useEffect(() => setMounted(true), [])
+  // Reset the copied flag whenever the palette closes — adjusted during
+  // render (React's "reset state on change" pattern) rather than in an effect.
+  if (open !== prevOpen) {
+    setPrevOpen(open)
+    if (!open) setCopied(false)
+  }
 
   // The portal stays mounted while closed (for opacity transitions), so
   // React's autoFocus only fires once. Re-focus the input every time the
@@ -158,11 +173,6 @@ export function CommandPalette() {
     return () => {
       document.body.style.overflow = prev
     }
-  }, [open])
-
-  // Reset copied flag whenever palette closes
-  useEffect(() => {
-    if (!open) setCopied(false)
   }, [open])
 
   const runAction = useCallback((action: Action) => {

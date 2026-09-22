@@ -5,6 +5,7 @@ import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { openCommandPalette } from '@/components/command-palette'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { profile } from '@/data/profile'
 
 const navLinks = [
   { label: 'About', href: '#about' },
@@ -86,10 +87,10 @@ export function Navigation() {
                 style={{ background: 'var(--accent)' }}
                 aria-hidden
               />
-              <span className="relative font-mono text-[11px] font-semibold text-white">AR</span>
+              <span className="relative font-mono text-[11px] font-semibold text-white">{profile.initials}</span>
             </span>
             <span className="text-[14px] font-medium tracking-tight text-ink">
-              Apoorv Raj
+              {profile.name}
             </span>
           </a>
 
@@ -128,7 +129,7 @@ export function Navigation() {
               <span>K</span>
             </button>
             <a
-              href="https://github.com/apoorvrajdev"
+              href={profile.links.github}
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:inline-flex btn-tertiary"

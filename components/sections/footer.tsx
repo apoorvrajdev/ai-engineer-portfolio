@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { Github, Linkedin, Mail } from 'lucide-react'
+import { profile } from '@/data/profile'
 
 const currentYear = new Date().getFullYear()
 
@@ -16,9 +17,9 @@ const footerLinks = [
 ]
 
 const socialLinks = [
-  { label: 'GitHub', href: 'https://github.com/apoorvrajdev', icon: Github },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/apoorv-raj-1a35ba218/', icon: Linkedin },
-  { label: 'Email', href: 'mailto:apoorvrajmgr@gmail.com', icon: Mail },
+  { label: 'GitHub', href: profile.links.github, icon: Github },
+  { label: 'LinkedIn', href: profile.links.linkedin, icon: Linkedin },
+  { label: 'Email', href: `mailto:${profile.email}`, icon: Mail },
 ]
 
 export function FooterSection() {
@@ -35,16 +36,14 @@ export function FooterSection() {
           <div>
             <a href="#home" className="inline-flex items-center gap-2.5">
               <span className="relative flex h-6 w-6 items-center justify-center rounded-md bg-accent">
-                <span className="font-mono text-[11px] font-semibold text-white">AR</span>
+                <span className="font-mono text-[11px] font-semibold text-white">{profile.initials}</span>
               </span>
-              <span className="text-[14px] font-medium tracking-tight text-ink">Apoorv Raj</span>
+              <span className="text-[14px] font-medium tracking-tight text-ink">{profile.name}</span>
             </a>
-            <p className="mt-5 body-default text-ink-subtle max-w-md">
-              AI Engineer building intelligent systems at the intersection of machine learning and software engineering.
-            </p>
+            <p className="mt-5 body-default text-ink-subtle max-w-md">{profile.tagline}</p>
             <div className="mt-6 inline-flex items-center gap-2 status-pill">
               <span className="dot" />
-              Available for new projects
+              {profile.availability}
             </div>
           </div>
 
@@ -91,15 +90,15 @@ export function FooterSection() {
               })}
             </ul>
             <p className="mt-5 mono text-ink-tertiary">
-              <a href="mailto:apoorvrajmgr@gmail.com" className="hover:text-ink transition-colors">
-                apoorvrajmgr@gmail.com
+              <a href={`mailto:${profile.email}`} className="hover:text-ink transition-colors">
+                {profile.email}
               </a>
             </p>
           </div>
         </div>
 
         <div className="mt-14 flex flex-col items-start justify-between gap-3 border-t border-hairline pt-6 sm:flex-row sm:items-center">
-          <p className="mono text-ink-tertiary">© {currentYear} Apoorv Raj · All rights reserved</p>
+          <p className="mono text-ink-tertiary">© {currentYear} {profile.name} · All rights reserved</p>
           <p className="mono text-ink-tertiary">Built with Next.js · Tailwind CSS · Framer Motion</p>
         </div>
       </motion.div>
