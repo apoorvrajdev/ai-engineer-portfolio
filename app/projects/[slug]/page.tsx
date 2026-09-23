@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { projects } from '@/data/projects'
 import { profile } from '@/data/profile'
+import { NOT_FOUND_TITLE } from '@/app/not-found'
+import { ProjectStructuredData } from '@/components/project-structured-data'
 import { ProjectPageClient } from './project-page-client'
 
 interface ProjectPageProps {
@@ -18,8 +20,10 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
   const { slug } = await params
   const project = projects.find((p) => p.slug === slug)
 
+  // An unknown slug renders the root not-found boundary. Return its title so
+  // the tab label stays put when the client takes over.
   if (!project) {
-    return { title: `Project not found | ${profile.name}` }
+    return { title: NOT_FOUND_TITLE }
   }
 
   const title = `${project.title} | ${profile.name}`
@@ -54,5 +58,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     notFound()
   }
 
-  return <ProjectPageClient project={project} />
+  return (
+    <>
+      <ProjectStructuredData project={project} />
+      <ProjectPageClient project={project} />
+    </>
+  )
 }
