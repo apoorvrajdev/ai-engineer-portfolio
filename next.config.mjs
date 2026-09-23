@@ -18,10 +18,13 @@ const nextConfig = {
             value: [
               "default-src 'self'",
               `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : ''}`,
-              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: https://ghchart.rshah.org",
-              "connect-src 'self' https://api.github.com",
+              // next/font self-hosts Onest and JetBrains Mono under
+              // /_next/static/media, so no Google Fonts origin is needed.
+              "style-src 'self' 'unsafe-inline'",
+              "font-src 'self'",
+              "img-src 'self' data:",
+              "connect-src 'self'",
+              "object-src 'none'",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",
