@@ -5,8 +5,11 @@ import { ArrowUpRight, FileText } from 'lucide-react'
 import { SectionWrapper } from '@/components/section-wrapper'
 import { SectionHeading } from '@/components/section-heading'
 import { researchPapers } from '@/data/research'
+import { useRevealFactory } from '@/components/motion/reveal'
 
 export function ResearchSection() {
+  const reveal = useRevealFactory()
+
   return (
     <SectionWrapper id="research">
       <SectionHeading
@@ -20,10 +23,7 @@ export function ResearchSection() {
         {researchPapers.map((paper, index) => (
           <motion.article
             key={paper.id}
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: index * 0.04, ease: [0.22, 1, 0.36, 1] }}
-            viewport={{ once: true, margin: '-80px' }}
+            {...reveal({ delay: index * 0.04 })}
             className="linear-card linear-card-hover p-6"
           >
             <div className="flex items-start justify-between gap-4">
@@ -57,7 +57,7 @@ export function ResearchSection() {
                   href={paper.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink hover:text-accent transition-colors"
+                  className="inline-flex items-center gap-1.5 py-1 text-[13px] font-medium text-ink hover:text-accent transition-colors"
                 >
                   Read on IEEE Xplore
                   <ArrowUpRight className="h-3.5 w-3.5" />
@@ -68,7 +68,7 @@ export function ResearchSection() {
                   href={`https://doi.org/${paper.doi}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink-subtle hover:text-ink transition-colors"
+                  className="inline-flex items-center gap-1.5 py-1 text-[13px] font-medium text-ink-subtle hover:text-ink transition-colors"
                 >
                   View DOI
                   <ArrowUpRight className="h-3.5 w-3.5" />

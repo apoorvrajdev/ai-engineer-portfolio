@@ -4,8 +4,11 @@ import { motion } from 'framer-motion'
 import { SectionWrapper } from '@/components/section-wrapper'
 import { SectionHeading } from '@/components/section-heading'
 import { skills } from '@/data/skills'
+import { useRevealFactory } from '@/components/motion/reveal'
 
 export function TechStackSection() {
+  const reveal = useRevealFactory()
+
   return (
     <SectionWrapper id="tech-stack">
       <SectionHeading
@@ -19,10 +22,7 @@ export function TechStackSection() {
         {skills.map((category, categoryIndex) => (
           <motion.div
             key={category.category}
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.45, delay: categoryIndex * 0.05, ease: [0.22, 1, 0.36, 1] }}
+            {...reveal({ y: 12, duration: 0.45, delay: categoryIndex * 0.05 })}
             className="linear-card p-6"
           >
             <div className="flex items-center justify-between border-b border-hairline pb-4">

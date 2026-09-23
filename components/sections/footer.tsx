@@ -3,6 +3,8 @@
 import { motion } from 'framer-motion'
 import { Github, Linkedin, Mail } from 'lucide-react'
 import { profile } from '@/data/profile'
+import { useRevealProps } from '@/components/motion/reveal'
+import { scrollToSection } from '@/lib/scroll'
 
 const currentYear = new Date().getFullYear()
 
@@ -12,7 +14,6 @@ const footerLinks = [
   { label: 'Experience', href: '#experience' },
   { label: 'Research', href: '#research' },
   { label: 'Stack', href: '#tech-stack' },
-  { label: 'Open source', href: '#open-source' },
   { label: 'Contact', href: '#contact' },
 ]
 
@@ -23,13 +24,12 @@ const socialLinks = [
 ]
 
 export function FooterSection() {
+  const reveal = useRevealProps({ y: 12 })
+
   return (
     <footer className="border-t border-hairline bg-canvas">
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-80px' }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        {...reveal}
         className="container-shell py-16 md:py-20"
       >
         <div className="grid gap-12 md:grid-cols-[2fr_1fr_1fr] md:gap-16">
@@ -56,11 +56,9 @@ export function FooterSection() {
                     href={link.href}
                     onClick={(e) => {
                       e.preventDefault()
-                      document
-                        .getElementById(link.href.replace('#', ''))
-                        ?.scrollIntoView({ behavior: 'smooth' })
+                      scrollToSection(link.href.replace('#', ''))
                     }}
-                    className="body-sm text-ink-subtle transition-colors hover:text-ink"
+                    className="inline-flex py-1 body-sm text-ink-subtle transition-colors hover:text-ink"
                   >
                     {link.label}
                   </a>
@@ -80,7 +78,7 @@ export function FooterSection() {
                       href={link.href}
                       target={link.href.startsWith('http') ? '_blank' : undefined}
                       rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      className="inline-flex items-center gap-2 body-sm text-ink-subtle transition-colors hover:text-ink"
+                      className="inline-flex items-center gap-2 py-1 body-sm text-ink-subtle transition-colors hover:text-ink"
                     >
                       <Icon className="h-3.5 w-3.5" />
                       {link.label}

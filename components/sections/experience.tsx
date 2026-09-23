@@ -6,8 +6,11 @@ import { SectionWrapper } from '@/components/section-wrapper'
 import { SectionHeading } from '@/components/section-heading'
 import { experience } from '@/data/experience'
 import { profile } from '@/data/profile'
+import { useRevealFactory } from '@/components/motion/reveal'
 
 export function ExperienceSection() {
+  const reveal = useRevealFactory()
+
   return (
     <SectionWrapper id="experience" dark>
       <div className="grid items-start gap-12 md:grid-cols-[1fr_1.5fr] md:gap-16">
@@ -36,10 +39,7 @@ export function ExperienceSection() {
             {experience.map((item, index) => (
               <motion.li
                 key={item.id}
-                initial={{ opacity: 0, y: 14 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.04, ease: [0.22, 1, 0.36, 1] }}
-                viewport={{ once: true, margin: '-80px' }}
+                {...reveal({ delay: index * 0.04 })}
                 className="relative pl-10 md:pl-12"
               >
                 {/* Timeline node */}

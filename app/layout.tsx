@@ -3,8 +3,13 @@ import { Onest, JetBrains_Mono } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
 import { StructuredData } from '@/components/structured-data'
 import { CommandPalette } from '@/components/command-palette'
+import { MotionProvider } from '@/components/motion/motion-provider'
 import { SITE_URL, profile } from '@/data/profile'
 import './globals.css'
+
+// Without JavaScript the scroll-reveal wrappers never run, so their inline
+// starting styles would hide the page. Reveal everything instead.
+const noScriptStyles = `[style*="opacity:0"]{opacity:1!important;transform:none!important}`
 
 const onest = Onest({
   subsets: ['latin'],
@@ -67,11 +72,16 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className="smooth-scroll">
       <head>
         <StructuredData />
+        <noscript>
+          <style dangerouslySetInnerHTML={{ __html: noScriptStyles }} />
+        </noscript>
       </head>
       <body className={`${onest.variable} ${jetbrainsMono.variable} font-sans antialiased bg-canvas text-ink`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} storageKey="theme-preference">
-          {children}
-          <CommandPalette />
+          <MotionProvider>
+            {children}
+            <CommandPalette />
+          </MotionProvider>
         </ThemeProvider>
       </body>
     </html>

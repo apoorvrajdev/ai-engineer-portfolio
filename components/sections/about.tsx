@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { GraduationCap } from 'lucide-react'
 import { SectionWrapper } from '@/components/section-wrapper'
 import { SectionHeading } from '@/components/section-heading'
-import { Reveal } from '@/components/motion/reveal'
+import { Reveal, useRevealProps } from '@/components/motion/reveal'
 import { education } from '@/data/education'
 import { profile } from '@/data/profile'
 import { researchPapers } from '@/data/research'
@@ -29,6 +29,8 @@ const checkpoints = [
 ]
 
 export function AboutSection() {
+  const reveal = useRevealProps({ margin: '-90px' })
+
   return (
     <SectionWrapper id="about">
       <SectionHeading
@@ -79,12 +81,7 @@ export function AboutSection() {
           </div>
         </Reveal>
 
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-90px' }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        >
+        <motion.div {...reveal}>
           <div className="linear-card p-6">
             <div className="flex items-center gap-2 eyebrow">
               <GraduationCap className="h-3.5 w-3.5" />

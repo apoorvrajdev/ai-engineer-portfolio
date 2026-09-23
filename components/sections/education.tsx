@@ -5,8 +5,11 @@ import { SectionWrapper } from '@/components/section-wrapper'
 import { education } from '@/data/education'
 import { CheckCircle2 } from 'lucide-react'
 import { SectionHeading } from '@/components/section-heading'
+import { useRevealFactory } from '@/components/motion/reveal'
 
 export function EducationSection() {
+  const reveal = useRevealFactory()
+
   return (
     <SectionWrapper id="education">
       <SectionHeading
@@ -19,10 +22,7 @@ export function EducationSection() {
         {education.map((item, index) => (
           <motion.div
             key={item.id}
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.06, ease: [0.4, 0, 0.2, 1] }}
-            viewport={{ once: true, margin: '-100px' }}
+            {...reveal({ x: -20, duration: 0.5, delay: index * 0.06, margin: '-100px' })}
             className="relative"
           >
             {index !== education.length - 1 && (

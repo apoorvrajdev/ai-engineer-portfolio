@@ -34,6 +34,8 @@
   --accent-hover: #828fff;
   --accent-focus: #5e69d1;
   --accent-soft: rgba(94, 106, 210, 0.12);
+  /* Accent tuned for small text — clears AA on every surface */
+  --accent-ink: #828fff;
 
   --success: #27a644;
 
@@ -89,6 +91,8 @@
   --accent-hover: #4f5cc3;
   --accent-focus: #5e69d1;
   --accent-soft: rgba(94, 106, 210, 0.10);
+  /* Accent tuned for small text — clears AA on every surface */
+  --accent-ink: #4f5bc4;
 
   --background: var(--canvas);
   --foreground: var(--ink);
@@ -146,6 +150,7 @@
   --color-ink-subtle: var(--ink-subtle);
   --color-ink-tertiary: var(--ink-tertiary);
   --color-accent-hover: var(--accent-hover);
+  --color-accent-ink: var(--accent-ink);
   --color-accent-focus: var(--accent-focus);
   --color-success: var(--success);
 
@@ -606,4 +611,25 @@
 
   /* (Removed: ambient-accent radial wash + grid-overlay.
       Linear avoids atmospheric gradients and decorative grids on marketing chrome.) */
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   Reduced motion — honour the OS setting for CSS animation, transitions
+   and scrolling. framer-motion entry animations are dropped separately in
+   components/motion/reveal.tsx.
+   ──────────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
