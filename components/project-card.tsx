@@ -27,6 +27,9 @@ export function ProjectCard({ project, index = 0 }: Readonly<ProjectCardProps>) 
         {/* Image well — framed by an inner hairline, sits on surface-2 for elevation */}
         <Link
           href={`/projects/${project.slug}`}
+          // Without this the accessible name is the category, status and period
+          // stacked on the image well, which never says which project it opens.
+          aria-label={`${project.title} — case study`}
           className="relative block overflow-hidden border-b border-hairline bg-surface-2"
         >
           <div className="relative aspect-16/10">

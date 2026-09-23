@@ -21,7 +21,7 @@ export default function Home() {
     <>
       <ScrollProgress />
       <Navigation />
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <HeroSection />
         <AboutSection />
         <ProjectsSection />

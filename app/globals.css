@@ -457,6 +457,21 @@
   }
   .btn-tertiary:hover { color: var(--ink); background: var(--surface-1); }
 
+  /* Skip to content — off-screen until focused, then pinned above the nav.
+     Uses the primary button surface so it reads as a real control. */
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 200;
+    transform: translateY(calc(-100% - 1.5rem));
+    transition: transform 150ms ease;
+  }
+  /* `:focus`, not `:focus-visible` — a pointer-activated skip link must show too. */
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
   /* Larger CTA variants (hero / closing CTA) */
   .btn-primary-lg {
     height: 44px;
