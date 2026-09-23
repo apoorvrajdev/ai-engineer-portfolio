@@ -63,21 +63,23 @@ export function FlagshipProject({ project }: Readonly<{ project: Project }>) {
         </div>
 
         {/* Product still */}
-        <figure className="relative m-0 border-t border-hairline bg-surface-2 lg:border-l lg:border-t-0">
-          {/* eslint-disable-next-line @next/next/no-img-element -- image optimization disabled in next.config */}
-          <img
-            src={project.image}
-            alt={project.imageAlt ?? `${project.title} interface`}
-            width={1440}
-            height={900}
-            className="h-full max-h-[380px] w-full object-cover object-left-top"
-            loading="lazy"
-            decoding="async"
-          />
-          <figcaption className="border-t border-hairline px-5 py-3 caption">
-            The public demo, reading the frozen snapshot it ships with. There is no hosted backend.
-          </figcaption>
-        </figure>
+        {project.image ? (
+          <figure className="relative m-0 border-t border-hairline bg-surface-2 lg:border-l lg:border-t-0">
+            {/* eslint-disable-next-line @next/next/no-img-element -- image optimization disabled in next.config */}
+            <img
+              src={project.image}
+              alt={project.imageAlt ?? `${project.title} interface`}
+              width={1440}
+              height={900}
+              className="h-full max-h-[380px] w-full object-cover object-left-top"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption className="border-t border-hairline px-5 py-3 caption">
+              The public demo, reading the frozen snapshot it ships with. There is no hosted backend.
+            </figcaption>
+          </figure>
+        ) : null}
       </div>
 
       {/* Evidence */}

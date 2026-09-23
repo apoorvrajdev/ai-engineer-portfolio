@@ -80,7 +80,7 @@ export function ProjectPageClient({ project }: { project: Project }) {
         </div>
       </div>
 
-      <main className="pb-24 pt-16 md:pt-20">
+      <main id="main-content" tabIndex={-1} className="pb-24 pt-16 md:pt-20">
         <motion.div
           variants={containerVariants}
           initial={prefersReducedMotion ? false : 'hidden'}
@@ -110,17 +110,19 @@ export function ProjectPageClient({ project }: { project: Project }) {
             </motion.section>
           ) : null}
 
-          <motion.div
-            variants={itemVariants}
-            className="linear-card overflow-hidden mb-12"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element -- image optimization disabled */}
-            <img
-              src={project.image}
-              alt={project.imageAlt ?? `${project.title} preview`}
-              className="h-auto w-full object-cover"
-            />
-          </motion.div>
+          {project.image ? (
+            <motion.div
+              variants={itemVariants}
+              className="linear-card overflow-hidden mb-12"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element -- image optimization disabled */}
+              <img
+                src={project.image}
+                alt={project.imageAlt ?? `${project.title} preview`}
+                className="h-auto w-full object-cover"
+              />
+            </motion.div>
+          ) : null}
 
           <motion.div variants={itemVariants} className="mb-16">
             <p className="eyebrow mb-4">Technology stack</p>

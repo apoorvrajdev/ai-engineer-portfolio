@@ -54,7 +54,8 @@ export interface Project {
   shortDescription: string
   /** Lede paragraph at the top of the case-study page. */
   description: string
-  image: string
+  /** Only a real product still — never decorative filler. Omit it and no figure renders. */
+  image?: string
   /** Describes what the image shows; falls back to a generic label when absent. */
   imageAlt?: string
   stack: string[]
@@ -351,7 +352,6 @@ export const projects: Project[] = [
       'Built with Tejaswi Raj: an EfficientNetB0 classifier for 38 leaf-disease classes. My part: backend, inference pipeline, deployment and hardening.',
     description:
       'A leaf-photo classifier for 38 disease classes across 14 crops, started as a university project with Tejaswi Raj and published in 2026. Tejaswi led research, data preparation, model training, notebook authoring, evaluation and the frontend; I worked on the backend and inference pipeline, deployment, testing, algorithm implementation and technical guidance.',
-    image: '/projects/medical-vision.svg',
     period: '2023 – 2026',
     category: 'AI/ML',
     tier: 'earlier',
@@ -406,7 +406,6 @@ export const projects: Project[] = [
       'Earlier work: 2023 coursework comparing classifiers for heart-disease risk, packaged as a Streamlit app in 2026.',
     description:
       'Sixth-semester coursework from 2023 that compared KNN, SVM, Random Forest, a voting ensemble and XGBoost on the widely used 1,025-row heart-disease dataset, later packaged as a Streamlit app that turns the model’s probability into a low / moderate / high risk band.',
-    image: '/projects/medical-vision.svg',
     period: '2023 – 2026',
     category: 'AI/ML',
     tier: 'earlier',
@@ -487,7 +486,6 @@ export const projects: Project[] = [
       'Earlier work: a 2023 diabetes-risk classifier packaged as a Streamlit app. Its earlier headline score came from data leakage and is withdrawn.',
     description:
       'A 2023 notebook that estimates Type 2 diabetes risk from eight clinical features on a ~100,000-row public dataset, later packaged as a Streamlit app with an explicit 13-column feature encoding and a model loaded once per container.',
-    image: '/projects/medical-vision.svg',
     period: '2023 – 2026',
     category: 'AI/ML',
     tier: 'earlier',
