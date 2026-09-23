@@ -40,8 +40,12 @@ export function StructuredData() {
   const projectsSchema = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
+    // `@id` matches the node emitted by `project-structured-data.tsx` on each
+    // case-study page, so the two graphs merge rather than describe the project
+    // twice.
     itemListElement: projects.map((project, index) => ({
-      '@type': 'CreativeWork',
+      '@type': 'SoftwareSourceCode',
+      '@id': `${SITE_URL}/projects/${project.slug}#project`,
       position: index + 1,
       name: project.title,
       description: project.shortDescription,
