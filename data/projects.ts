@@ -15,6 +15,26 @@ export interface ProjectSection {
   body?: string[]
   /** Optional bullet list, rendered after the paragraphs. */
   points?: string[]
+  /** Optional table, for results that are genuinely tabular. */
+  table?: ProjectTable
+}
+
+export interface ProjectTable {
+  columns: string[]
+  rows: string[][]
+  caption?: string
+}
+
+/**
+ * A headline figure. `population` is required: a metric without the thing it
+ * was measured on is exactly the claim this site does not make.
+ */
+export interface ProjectEvidence {
+  value: string
+  label: string
+  population: string
+  /** Marks the result that matters most, including an unflattering one. */
+  emphasis?: boolean
 }
 
 export interface ProjectLink {
@@ -35,6 +55,8 @@ export interface Project {
   /** Lede paragraph at the top of the case-study page. */
   description: string
   image: string
+  /** Describes what the image shows; falls back to a generic label when absent. */
+  imageAlt?: string
   stack: string[]
   github?: string
   /** Only for a demo that is actually running. */
@@ -45,6 +67,8 @@ export interface Project {
   tier: ProjectTier
   role: ProjectRole
   status: ProjectStatus
+  /** Headline figures, shown on the flagship panel and the case-study header. */
+  evidence?: ProjectEvidence[]
   sections: ProjectSection[]
   sources: ProjectLink[]
   /** ISO date the content was last checked against the repository. */
@@ -64,12 +88,47 @@ export const projects: Project[] = [
       'Real-time fraud scoring with rules, XGBoost and per-decision SHAP. 1,407 tests, a live demo, and a benchmark that shows where the model fails.',
     description:
       'A real-time card-fraud detection platform built end to end. A FastAPI service scores each transaction with six deterministic rules and an XGBoost model in single-digit milliseconds, attaches a SHAP explanation to every decision, and routes it to an analyst review queue with an append-only audit trail; a React 19 + TypeScript dashboard sits on top. An offline evaluation programme then tested whether the model generalises beyond the synthetic data it was trained on. It does not transfer across data generators without retraining, and the project reports that in full.',
-    image: '/projects/fraud-radar.svg',
+    image: '/projects/fraud-radar-dashboard.webp',
+    imageAlt:
+      'The Fraud Radar transactions view: scored transactions with decisions, amounts converted to a reporting currency, and filters.',
     period: '2026',
     category: 'Full-Stack',
     tier: 'flagship',
     role: 'solo',
     status: 'Live demo',
+    evidence: [
+      {
+        value: '0.9327 PR-AUC',
+        label: 'In-distribution',
+        population: 'Synthetic held-out fold · 93 frauds in 7,502',
+      },
+      {
+        value: '0.8653 PR-AUC',
+        label: 'Retrained on an independent generator',
+        population: 'Sparkov fold · 924 frauds in 277,860',
+      },
+      {
+        value: '0.0087 PR-AUC',
+        label: 'Carried across generators, no retraining',
+        population: 'Same Sparkov fold · 0.0033 prevalence',
+        emphasis: true,
+      },
+      {
+        value: '0.7670 PR-AUC',
+        label: 'Real anonymised card data, isolated track',
+        population: 'ULB seed 42 · 52 frauds in 42,722',
+      },
+      {
+        value: '3.7 ms',
+        label: 'Service-layer scoring, p50',
+        population: 'n = 500, developer laptop',
+      },
+      {
+        value: '1,407 tests',
+        label: 'Green in CI',
+        population: 'ruff · mypy --strict · tsc · eslint',
+      },
+    ],
     stack: [
       'Python 3.11',
       'FastAPI',
@@ -126,11 +185,20 @@ export const projects: Project[] = [
       },
       {
         heading: 'Results, each read against its prevalence',
+        table: {
+          caption:
+            'Four evaluations, never merged or averaged. A scorer with no signal scores about the prevalence, so read each PR-AUC against the column beside it.',
+          columns: ['Evaluation', 'Population', 'PR-AUC', 'ROC-AUC', 'Recall @ 1% FPR'],
+          rows: [
+            ['In-distribution (synthetic)', '93 frauds in 7,502 · prevalence 0.0124', '0.9327', '0.9989', '0.9785'],
+            ['Retrained on Sparkov', '924 frauds in 277,860 · prevalence 0.0033', '0.8653', '0.9963', '0.9459'],
+            ['Transferred, no retraining', 'Same Sparkov fold · prevalence 0.0033', '0.0087', '0.7354', '0.0390'],
+            ['ULB real data, isolated track', '52 frauds in 42,722 · prevalence 0.0012, seed 42', '0.7670', '0.9751', '0.8269'],
+          ],
+        },
         points: [
-          'In-distribution (synthetic): PR-AUC 0.9327 on the held-out chronological test fold of 7,502 transactions with 93 frauds (prevalence 0.0124). At the threshold chosen on validation, precision is 0.61 and recall 0.96.',
-          'Retrained on Sparkov: PR-AUC 0.8653 on a 277,860-row test fold with 924 frauds (prevalence 0.0033).',
-          'Transferred without retraining: PR-AUC 0.0087 on that same Sparkov test fold, barely above its 0.0033 prevalence. At the source threshold it flags 19,215 legitimate transactions to catch 58 frauds.',
-          'Real data (ULB, isolated track): PR-AUC 0.7670 for the primary seed (0.7569 and 0.7751 for the pre-registered repeats) at prevalence 0.0012, on a test fold holding 52 frauds.',
+          'At the threshold chosen on the synthetic validation fold, in-distribution precision is 0.61 and recall 0.96. Applied unchanged to Sparkov, that same threshold flags 19,215 legitimate transactions to catch 58 frauds.',
+          'The ULB repeats (seeds 43 and 44) score 0.7569 and 0.7751, which shows how much the figure moves with the fit’s randomness on a fold holding 52 frauds.',
           'Temporal drift: with the threshold selected once on late-2019 data, monthly recall across 2020 stays between 0.906 and 0.970 while precision falls from about 0.40 to 0.16 as prevalence drops.',
           'Rules audit: across all 1.85M Sparkov rows the production rules would approve 9,385 of 9,651 frauds; two rules never fire and one cannot be evaluated on that data.',
           'Latency: service-layer scoring p50 3.7 ms / p95 5.8 ms; full HTTP round trip p50 16 ms / p95 20 ms (n = 500, developer laptop).',
@@ -190,6 +258,29 @@ export const projects: Project[] = [
     tier: 'secondary',
     role: 'solo',
     status: 'Demo offline',
+    evidence: [
+      {
+        value: '10.4 BLEU-4',
+        label: 'Beam search, as committed',
+        population: '500 COCO images · ~1.5 references each',
+      },
+      {
+        value: '25.9 BLEU-4',
+        label: 'Same predictions, five-reference rescore',
+        population: 'sacreBLEU · identical 500 predictions',
+      },
+      {
+        value: '3 of 30',
+        label: 'Captions judged image-specific',
+        population: 'Blinded rubric review, judged without sight of the BLEU result',
+        emphasis: true,
+      },
+      {
+        value: '94 tests',
+        label: 'Four-job CI',
+        population: 'ruff · mypy · notebook freeze · frontend build',
+      },
+    ],
     stack: [
       'Python',
       'TensorFlow / Keras',
