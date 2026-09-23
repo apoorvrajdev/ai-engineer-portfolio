@@ -6,13 +6,13 @@ import { cn } from '@/lib/utils'
 import { openCommandPalette } from '@/components/command-palette'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { profile } from '@/data/profile'
+import { scrollToSection } from '@/lib/scroll'
 
 const navLinks = [
   { label: 'About', href: '#about' },
   { label: 'Work', href: '#projects' },
   { label: 'Experience', href: '#experience' },
   { label: 'Research', href: '#research' },
-  { label: 'Open source', href: '#open-source' },
 ]
 
 export function Navigation() {
@@ -47,15 +47,8 @@ export function Navigation() {
 
   const handleNavScroll = (href: string) => {
     const elementId = href.replace('#', '')
-    if (elementId === 'home') {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-      setActiveHash(href)
-      setIsOpen(false)
-      return
-    }
-    const target = document.getElementById(elementId)
-    if (!target) return
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (elementId !== 'home' && !document.getElementById(elementId)) return
+    scrollToSection(elementId)
     setIsOpen(false)
     setActiveHash(href)
   }
@@ -123,7 +116,7 @@ export function Navigation() {
               type="button"
               onClick={openCommandPalette}
               aria-label="Open command palette"
-              className="hidden md:inline-flex items-center gap-1 rounded-md border border-hairline bg-surface-1 px-2 py-1 font-mono text-[11px] text-ink-tertiary transition-colors hover:border-accent hover:text-ink"
+              className="hidden md:inline-flex h-8 items-center gap-1 rounded-md border border-hairline bg-surface-1 px-2.5 font-mono text-[11px] text-ink-tertiary transition-colors hover:border-accent hover:text-ink"
             >
               <span aria-hidden>⌘</span>
               <span>K</span>

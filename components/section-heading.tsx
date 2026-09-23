@@ -30,7 +30,7 @@ export function SectionHeading({
       {eyebrow ? (
         <div className="inline-flex items-center gap-2">
           <span className="h-px w-6 bg-hairline-strong" aria-hidden />
-          <p className="eyebrow text-accent">{eyebrow}</p>
+          <p className="eyebrow text-accent-ink">{eyebrow}</p>
         </div>
       ) : null}
       <h2 className="display-md text-ink text-balance">

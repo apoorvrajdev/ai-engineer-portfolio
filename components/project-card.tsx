@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Project } from '@/data/projects'
 import { ArrowUpRight, Github, ExternalLink } from 'lucide-react'
+import { useRevealProps } from '@/components/motion/reveal'
 
 interface ProjectCardProps {
   project: Project
@@ -18,14 +19,10 @@ const statusDotClass: Record<Project['status'], string> = {
 }
 
 export function ProjectCard({ project, index = 0 }: Readonly<ProjectCardProps>) {
+  const reveal = useRevealProps({ delay: index * 0.05 })
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
-      viewport={{ once: true, margin: '-80px' }}
-      className="h-full"
-    >
+    <motion.div {...reveal} className="h-full">
       <article className="linear-card linear-card-hover group/card relative flex h-full flex-col overflow-hidden">
         {/* Image well — framed by an inner hairline, sits on surface-2 for elevation */}
         <Link
@@ -37,7 +34,7 @@ export function ProjectCard({ project, index = 0 }: Readonly<ProjectCardProps>) 
               // eslint-disable-next-line @next/next/no-img-element -- image optimization disabled in next.config
               <img
                 src={project.image}
-                alt={`${project.title} preview`}
+                alt={project.imageAlt ?? `${project.title} preview`}
                 className="h-full w-full object-cover"
                 loading="lazy"
                 onError={(e) => {
@@ -85,7 +82,7 @@ export function ProjectCard({ project, index = 0 }: Readonly<ProjectCardProps>) 
           <div className="mt-6 flex items-center justify-between gap-3 border-t border-hairline pt-4">
             <Link
               href={`/projects/${project.slug}`}
-              className="inline-flex items-center gap-1.5 text-[13px] font-medium text-ink transition-colors hover:text-accent"
+              className="inline-flex items-center gap-1.5 py-1 text-[13px] font-medium text-ink transition-colors hover:text-accent"
             >
               Case study
               <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5" />

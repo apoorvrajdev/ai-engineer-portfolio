@@ -20,6 +20,7 @@ import { profile } from '@/data/profile'
 import { projects } from '@/data/projects'
 import { researchPapers } from '@/data/research'
 import { useMounted } from '@/hooks/use-mounted'
+import { scrollToSection } from '@/lib/scroll'
 
 type Action =
   | { kind: 'scroll'; targetId: string }
@@ -61,7 +62,7 @@ const groups: Group[] = [
       { id: 'nav-work', label: 'Work', action: { kind: 'scroll', targetId: 'projects' } },
       { id: 'nav-experience', label: 'Experience', action: { kind: 'scroll', targetId: 'experience' } },
       { id: 'nav-research', label: 'Research', action: { kind: 'scroll', targetId: 'research' } },
-      { id: 'nav-open-source', label: 'Open Source', action: { kind: 'scroll', targetId: 'open-source' } },
+      { id: 'nav-stack', label: 'Stack', action: { kind: 'scroll', targetId: 'tech-stack' } },
       { id: 'nav-contact', label: 'Contact', action: { kind: 'scroll', targetId: 'contact' } },
     ],
   },
@@ -180,10 +181,7 @@ export function CommandPalette() {
       case 'scroll': {
         close()
         // Defer to next tick so the modal can unmount cleanly first
-        requestAnimationFrame(() => {
-          const el = document.getElementById(action.targetId)
-          el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        })
+        requestAnimationFrame(() => scrollToSection(action.targetId))
         break
       }
       case 'link': {
