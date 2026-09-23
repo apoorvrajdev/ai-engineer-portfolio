@@ -34,7 +34,7 @@ Keep subject under 72 characters. Body optional but explains *why*, not *what*.
 - Compose classes with `cn()` from `@/lib/utils`; do not hand-roll clsx/tailwind-merge logic.
 - Reach for the Linear primitives (`.linear-card`, `.linear-card-hover`, `.linear-card-featured`, `.btn-primary`, `.btn-secondary`, `.btn-tertiary`) before writing new utility soup. The `.brutal-*` / `.highlight-*` classes are compatibility aliases only — see the design-system section.
 - Content edits belong in `data/*.ts`, not in components. Identity facts (name, title, employer, links, email, availability, site URL) live only in `data/profile.ts`.
-- Anything stateful, themed, or animated (`useState`/`useEffect`/framer-motion/next-themes) must be `'use client'`. Keep data-fetching sections as server components and delegate UI to a client child (see `github-activity.tsx`).
+- Anything stateful, themed, or animated (`useState`/`useEffect`/framer-motion/next-themes) must be `'use client'`. A section that needs server-side data should stay a server component and delegate its UI to a client child.
 - Don't call `setState` synchronously inside `useEffect` (the `react-hooks/set-state-in-effect` rule fails lint). For client-only rendering use `useMounted()` from `@/hooks/use-mounted`.
 - Run `npm run lint`, `npm run typecheck` and `npm run build` before suggesting a commit. CI (`.github/workflows/ci.yml`) runs the same three on every push to `main` and every pull request.
 
@@ -110,9 +110,12 @@ The following classes from the previous neo-brutalist phase still exist in `glob
 - `.highlight-{coral,blue,indigo,yellow,black}` → render as inline accent-colored text (`color: var(--accent)`), not solid-background spans. There is no multi-color highlight palette anymore.
 - `--hl-coral`, `--hl-blue`, `--hl-indigo` all alias to `--accent`; `--hl-yellow` aliases to `--ink-muted`; `--hl-mint` aliases to `--success #27a644`. The `bg-hl-*` / `text-hl-*` Tailwind utilities still resolve, but produce a single-accent rendering.
 
-### Known design-system gaps
+### Accessibility invariants
 
-- **No `prefers-reduced-motion` support yet** — `globals.css` has no `@media (prefers-reduced-motion: reduce)` block, and the framer-motion primitives in `components/motion/*` do not consult `useReducedMotion()`. Tracked as roadmap **3G**. When adding new motion, gate it on reduced-motion or it will ship the accessibility regression with you.
+- **Reduced motion is supported** — `globals.css` has a `@media (prefers-reduced-motion: reduce)` block, the motion primitives drop entry animations, and `lib/scroll.ts` stops smooth scrolling. Route new motion through `components/motion/*` or it will ship an accessibility regression.
+- **Accent text**: `--accent` (#5e6ad2) only clears AA at display sizes. For small text use `text-accent-ink` (`--accent-ink`: #828fff dark, #4f5bc4 light).
+- **Without JavaScript** the scroll-reveal wrappers never run, so the root layout ships a `<noscript>` rule that clears their inline `opacity:0`. Keep it when changing motion.
+- Verified at 1440px and 390px: no horizontal overflow, no heading-level jumps, AA contrast for small text, and tap targets of at least 24px.
 
 ## Architecture
 
@@ -122,7 +125,7 @@ This is a Next.js 16 App Router portfolio site (React 19, framer-motion, next-th
 
 - `app/layout.tsx` — root server layout. Loads Onest + JetBrains Mono via `next/font`, wraps the tree in `ThemeProvider` (next-themes, `class` attribute, `defaultTheme="dark"`, `enableSystem={false}`, `storageKey="theme-preference"`), and injects `<StructuredData />` JSON-LD into `<head>`. Site `metadata` (OG/Twitter/icons) lives here and reads its values from `data/profile.ts`.
 - `app/template.tsx` — runs on every navigation; wraps children in `PageTransition` so route changes animate.
-- `app/page.tsx` — composes the home page from `components/sections/*` in display order. Reordering or adding a section is done here. **Note:** `components/sections/education.tsx` and `data/education.ts` exist but are **not currently mounted** in `app/page.tsx` or `navLinks`; wire both up if reintroducing the section.
+- `app/page.tsx` — composes the home page from `components/sections/*` in display order: Hero → About → Work → Experience → Research → Stack → Contact. Reordering or adding a section is done here. **Note:** `components/sections/education.tsx` and `data/education.ts` exist but the section is **not mounted** (`about.tsx` renders the education card from `data/education.ts` instead).
 - `app/projects/[slug]/page.tsx` — **server** component. Calls `generateStaticParams()` from `data/projects.ts` so every project page is pre-rendered at build time, and exports `generateMetadata` for per-project description (`shortDescription`), canonical URL and OG/Twitter tags. Adding a project is purely a data change in `data/projects.ts`; the route, share image and sitemap pick it up automatically. Missing slugs `notFound()`.
 - `app/projects/[slug]/opengraph-image.tsx` — per-project share image generated at build time from the project's `shortTitle`, `shortDescription`, `status` and `period`. It supplies `og:image`; a config-based `openGraph` in `generateMetadata` would otherwise drop the inherited image.
 - `app/projects/[slug]/project-page-client.tsx` — the interactive client half of the project detail page (framer-motion, scroll, etc.). The server `page.tsx` resolves the project and renders this with the project as a prop.
@@ -132,33 +135,33 @@ This is a Next.js 16 App Router portfolio site (React 19, framer-motion, next-th
 
 ### Components
 
-- `components/sections/*` — one file per home-page section. All `'use client'` except `github-activity.tsx`, which is an async server component (see below).
+- `components/sections/*` — one file per home-page section, all `'use client'` (they animate). `projects.tsx` composes the three tiers: flagship, "Also built" cards, and a compact list of earlier and collaborative work.
 - `components/section-wrapper.tsx` — standard frame for sections: applies `.section-spacing`, wraps content in `Reveal` (scroll-triggered fade-up), and accepts a `dark` prop for sections that need to invert against the canvas (kept for API compatibility; on the dark-first canvas the inversion is mostly a no-op). New sections should use this and pass an `id` matching the nav anchor.
 - `components/section-heading.tsx` — eyebrow + title + optional `highlight` span + description. The `highlight` prop renders an inline accent-colored span; `highlightColor` is accepted for API compatibility but all values now resolve to the single lavender accent. Use `invert` for headings inside a `dark` section.
-- `components/navigation.tsx` — floating pill nav (`max-w-3xl` centered, hairline border, surface-1 background, backdrop blur). The `navLinks` array drives both the menu and an `IntersectionObserver` that highlights the active section. **When adding/removing a section, update `navLinks` and ensure the section's `id` matches.** The footer still links to `#open-source` (the github-activity section) even though it's not in the top nav.
-- `components/motion/*` — `Reveal` (the standard scroll reveal; also exports `staggerContainer` and `revealItem` variants) and `PageTransition`. Neither currently consults `useReducedMotion()` — see the design-system gaps note above.
+- `components/navigation.tsx` — sticky nav. The `navLinks` array (About · Work · Experience · Research) drives both the menu and an `IntersectionObserver` that highlights the active section. **When adding or removing a section, update `navLinks`, the footer list and the command palette, and make sure the section's `id` matches.**
+- `components/motion/*` — `Reveal` plus `useRevealProps()` / `useRevealFactory()` (use the factory inside a `map`, where hooks cannot be called), and `PageTransition`. All of them drop the entry animation entirely under reduced motion, returning explicit visible values so the hidden server-rendered styles are overwritten. New motion must go through these.
 - `components/scroll-progress.tsx` — top-of-page scroll progress bar (lavender accent fill); mounted once in `app/page.tsx` above `<Navigation />`.
 - `components/command-palette.tsx` — global ⌘K / Ctrl+K / `?` palette built on `cmdk` and rendered through a portal. Three groups (Navigate · Links · Actions), substring filter, focus restored on close, body scroll locked while open, `role="dialog"` + `aria-modal="true"` + `aria-label="Command palette"`.
 - `components/theme-toggle.tsx` — Sun ⇄ Moon button wired through `next-themes`. Hydration-safe via `useMounted()` (`hooks/use-mounted.ts`, a `useSyncExternalStore` guard).
-- `components/project-card.tsx` — hairline-bordered project card with a category-tinted header swatch, GitHub/demo icon buttons, status dot, period, and a "Case study" link to `/projects/[slug]`.
+- `components/project-card.tsx` — hairline-bordered project card used for the `secondary` tier: header image, GitHub/demo icon buttons, status dot, period, and a "Case study" link to `/projects/[slug]`.
+- `components/flagship-project.tsx` — the `flagship` tier: narrative, product still, and the evidence grid. One per site; driven entirely by `data/projects.ts`.
+- `components/evidence-stat.tsx` — one measured figure. `population` is required by the type, so a bare number cannot reach the page.
+- `components/motion/motion-provider.tsx` — `MotionConfig reducedMotion="user"`, mounted in the root layout.
+- `lib/scroll.ts` — `scrollToSection()`; jumps instead of gliding when the visitor prefers reduced motion (CSS `scroll-behavior` does not apply to `scrollIntoView`). Every in-page link goes through it.
 - `components/ui/*` — shadcn/ui primitives, added on demand with `npx shadcn@latest add <name>` (none are installed at present). Treat them as generated; consume via `cn()` from `@/lib/utils`.
 - `components/structured-data.tsx` — JSON-LD (Person, Organization, ItemList of projects, ScholarlyArticle per paper with every author), built from `data/profile.ts`, `data/projects.ts` and `data/research.ts`.
-
-### GitHub activity (server + client split)
-
-`components/sections/github-activity.tsx` is an `async` server component. It fetches `api.github.com/users/<GITHUB_USER>/repos?sort=updated` with `next: { revalidate: 3600 }` (ISR every hour), falls back to a hardcoded `fallbackRepositories` list on any failure, then passes results to the `'use client'` `github-activity-client.tsx` for the interactive UI. `GITHUB_USER` comes from `profile.githubUser`; **when changing the GitHub username, update the `fallbackRepositories` list too** — the fallback names also define the display order (the fetched URLs are merged by name).
 
 ### Content / data layer
 
 `data/*.ts` is the single source of truth for site content. **Editing content is almost always a data-file change, not a component change.**
 
 - `profile.ts` — identity facts (`profile`, `SITE_URL`, `currentRole`) consumed by metadata, JSON-LD, OG images, hero, navigation, about, contact, footer and the command palette.
-- `projects.ts` exports a typed `Project[]` in display order. Each project's `slug` is the URL segment under `/projects/` (don't rename slugs — they are linked from outside). Key fields: `tier` (`flagship` / `secondary` / `earlier`), `role` (`solo` / `collaboration` / `contribution`), `status`, `period`, `shortDescription` (≤ 160 chars; card blurb and meta description), `description` (case-study lede), `sections` (project-specific `{ heading, body?, points? }` blocks rendered in order — no fixed template), `sources` (evidence links shown at the end of the case study) and `factsCheckedOn`. Adding a project also extends the sitemap, share images and static params automatically.
+- `projects.ts` exports a typed `Project[]` in display order. Each project's `slug` is the URL segment under `/projects/` (don't rename slugs — they are linked from outside). Key fields: `tier` (`flagship` / `secondary` / `earlier` — this drives the homepage hierarchy), `role` (`solo` / `collaboration` / `contribution`, shown as a label on the case study), `status`, `period`, `shortDescription` (≤ 160 chars; card blurb and meta description), `description` (case-study lede), `image` + `imageAlt`, `evidence` (headline figures — `population` is required, so a bare number cannot be shown), `sections` (project-specific `{ heading, body?, points?, table? }` blocks rendered in order — render only what exists, never an empty placeholder), `sources` and `factsCheckedOn`. Adding a project also extends the sitemap, share images and static params automatically.
 - `research.ts` — publications with the full author list in published order, DOI and publisher link.
 - `experience.ts`, `education.ts`, `skills.ts` — analogous, consumed by the matching section components (`about.tsx` reads `education.ts` for its education card).
 
 ### Conventions
 
-- Anything using framer-motion, `useState`/`useEffect`, or theme state must be a client component (`'use client'`). Sections that need server-side data (e.g. `github-activity.tsx`) stay server and delegate UI to a client child.
+- Anything using framer-motion, `useState`/`useEffect`, or theme state must be a client component (`'use client'`). A section needing server-side data stays a server component and delegates its UI to a client child.
 - Use `cn()` from `@/lib/utils` for conditional class composition (clsx + tailwind-merge).
 - Prefer the Linear primitives (`.linear-card*`, `.btn-*`) over hand-rolling equivalents — the visual language depends on consistency.

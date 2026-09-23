@@ -302,6 +302,7 @@ The page rhythm is **dense product screenshots** — Linear's marketing leads wi
 - **Ink Muted** ({colors.ink-muted}): Secondary type at #d0d6e0 — meta info on hero panels.
 - **Ink Subtle** ({colors.ink-subtle}): Tertiary type at #8a8f98 — deselected pricing tabs, footer columns.
 - **Ink Tertiary** ({colors.ink-tertiary}): Quaternary at #7a7f88 — captions, footnotes, mono meta. Raised from Linear’s #62666d so small text clears WCAG AA (≥ 4.5:1) on canvas, surface-1 and surface-2; the light theme uses #6b6e75 for the same reason.
+- **Accent Ink** ({colors.accent-ink}): #828fff on dark, #4f5bc4 on light — accent-coloured text below display size. The brand lavender #5e6ad2 only reaches 4.05–4.44:1 on the dark surfaces, so eyebrows, mono labels and emphasised figures use this instead.
 
 ### Semantic
 - **Success Green** ({colors.semantic-success}): Status pills, success indicators. The only semantic color on marketing.

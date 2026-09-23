@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  A statically-generated, single-page-scroll portfolio with per-project case study pages, server-fetched GitHub activity, JSON-LD structured data, and a deliberately opinionated design system. Every section, project, and metric is a typed entry in <code>data/*.ts</code> — content edits are diffs, not CMS round-trips.
+  A statically-generated, single-page-scroll portfolio with per-project case study pages, a flagship project presented with its evaluation evidence, JSON-LD structured data, and a deliberately opinionated design system. Every section, project, and figure is a typed entry in <code>data/*.ts</code> — content edits are diffs, not CMS round-trips.
 </p>
 
 <p align="center">
@@ -28,7 +28,7 @@
 
 ## Status
 
-> 🟢 **Live and deploying from `main`.** The site is shipped on Vercel and rebuilds on every push. Phases 1–5 built the App Router scaffold, typed content, all home-page sections, statically-generated case studies, ISR-driven GitHub activity, JSON-LD, OG images, the **Linear-inspired** visual system captured in [`DESIGN.md`](DESIGN.md), the terminal hero card, the ⌘K command palette and the theme toggle. **Phase 6 — Evidence pass** re-checked every project claim against its repository and every role against the current CV, credited collaborators, replaced the fixed case-study template with project-specific sections and sources, moved identity into a single `data/profile.ts`, added canonical URLs and per-project share images, fixed text contrast, and added a CI gate. The visual and information-architecture redesign is next.
+> 🟢 **Live and deploying from `main`.** The site is shipped on Vercel and rebuilds on every push. Phases 1–5 built the App Router scaffold, typed content, all home-page sections, statically-generated case studies, ISR-driven GitHub activity, JSON-LD, OG images, the **Linear-inspired** visual system captured in [`DESIGN.md`](DESIGN.md), the terminal hero card, the ⌘K command palette and the theme toggle. **Phase 6 — Evidence pass** re-checked every project claim against its repository and every role against the current CV, credited collaborators, replaced the fixed case-study template with project-specific sections and sources, moved identity into a single `data/profile.ts`, added canonical URLs and per-project share images, fixed text contrast, and added a CI gate. **Phase 7 — Hierarchy and proof** made Fraud Radar the flagship with an evidence panel on the homepage, demoted the rest into secondary and earlier tiers, added tables and figures to the case studies, simplified the hero, and finished reduced-motion, no-JS and tap-target support.
 
 > 📐 **Why this exists.** A portfolio for an AI engineer should *look like* engineering: typed data, statically-generated routes, structured metadata, an actual design system. The site is the deliverable, but the repo is the demonstration.
 
@@ -50,7 +50,7 @@ A portfolio is the first interface a hiring manager, collaborator, or conference
 
 This project is the answer to both:
 
-- **Content is typed data, not markup.** Adding a project is one entry in `data/projects.ts` — the route, the sitemap, the OG metadata, the case study page, and the search-engine indexing all update automatically.
+- **Content is typed data, not markup.** Adding a project is one entry in `data/projects.ts` — the route, the sitemap, the OG metadata, the case study page, and the search-engine indexing all update automatically. Its `tier` decides where it appears in the homepage hierarchy.
 - **Every page is statically generated.** Per-project case study routes are pre-rendered at build time via `generateStaticParams`, so cold-load TTFB is measured in tens of milliseconds and crawlers see fully-rendered HTML.
 - **SEO is treated as engineering.** JSON-LD structured data (Person, Organization, ItemList, ScholarlyArticle), site-wide and per-project OG images via `next/og`, per-page canonical URLs, per-project descriptions and Twitter metadata, and an auto-generated sitemap — wired once, no afterthought.
 - **Content is held to an evidence bar.** Every figure names what it was measured on, collaborators are credited, and each case study ends with links to its sources. The rules live in [`CLAUDE.md`](CLAUDE.md#content-accuracy-rules).
@@ -63,7 +63,6 @@ This project is the answer to both:
 - Production-style **Next.js 16 App Router** architecture with React 19 server and client components correctly partitioned.
 - **TypeScript strict-mode** end to end — all data files, props, and helpers are typed; no `any` escape hatches.
 - **Statically-generated project routes** with per-project `generateMetadata` for OG / Twitter / canonical tags.
-- **Server-side data fetching** for GitHub activity via async server components, with **ISR** (1-hour revalidate) and a deterministic fallback list so the section never goes blank.
 - **Tailwind v4 CSS-first** configuration — no `tailwind.config.js`, design tokens declared as CSS custom properties in `@theme inline`, palette utilities auto-generated.
 - Class composition via `cn()` from a tiny `clsx + tailwind-merge` helper, with a shadcn/ui config (new-york style, lucide icons) kept for adding primitives.
 - **A CI gate** (GitHub Actions) running lint, typecheck and a production build on every push to `main` and every pull request.
@@ -71,8 +70,9 @@ This project is the answer to both:
 - **Motion as a system** — a reusable `Reveal` scroll-trigger, `PageTransition` route wrapper, and shared `staggerContainer / revealItem` variants — not a pile of one-off `motion.div` props.
 - **Global command palette** built on `cmdk` — ⌘K / Ctrl+K / `?` opens it from anywhere, Esc closes, arrow keys navigate, Enter activates. Three groups (Navigate · Links · Actions), substring filter, focus restored to the previously focused element on close, body scroll locked while open. Accessible via `role="dialog"`, `aria-modal`, and `aria-label`.
 - **Light / dark theme toggle** wired through `next-themes` — explicit user choice (no `enableSystem`), persisted via `localStorage`, available both as a nav button (Sun ⇄ Moon) and as a palette action.
-- **Terminal hero card** — a static, monospaced "terminal" panel that surfaces role, stack, status, and the ⌘K hint. Pure CSS cursor blink, no JS animation loops.
-- **Structured data + dynamic OG image** rendered via `next/og` `ImageResponse`, baked at the edge.
+- **Structured data + OG images** rendered via `next/og` `ImageResponse`, generated at build time for the site and for every project.
+- **An evidence-first content model** — a project's headline figures are typed entries whose `population` field is required, so a number can never appear without the thing it was measured on.
+- **Accessibility as a build rule** — AA contrast tokens, reduced-motion support across CSS and framer-motion, a `noscript` fallback, and verified behaviour at 1440px and 390px.
 - **Auto-generated sitemap** that iterates the typed project list, so it never drifts from the routes that actually exist.
 - **Conventional Commits** with a strict no-AI-attribution authoring policy enforced in [`CLAUDE.md`](CLAUDE.md).
 
@@ -153,7 +153,7 @@ Page → Section → Reveal-wrapped card grid → Themed primitive
 | **Fonts**          | Onest + JetBrains Mono via `next/font/google`                                                 |
 | **SEO**            | `next/og` OG images (site + per project), JSON-LD, canonical URLs, auto sitemap               |
 | **Quality**        | ESLint 9 flat config, `tsc --noEmit`, GitHub Actions CI (lint · typecheck · build)            |
-| **Hosting**        | Vercel (OG images generated at build time, ISR for GitHub Activity)                           |
+| **Hosting**        | Vercel (static pages and OG images generated at build time)                                   |
 
 ---
 
@@ -180,13 +180,14 @@ ai-engineer-portfolio/
 │   │   ├── projects.tsx
 │   │   ├── research.tsx
 │   │   ├── tech-stack.tsx
-│   │   ├── github-activity.tsx           # async server component (ISR 1h + fallback)
-│   │   ├── github-activity-client.tsx    # interactive client child
 │   │   ├── contact.tsx
 │   │   └── footer.tsx
 │   ├── motion/
-│   │   ├── reveal.tsx                    # Scroll-triggered fade-up (the one motion primitive)
+│   │   ├── reveal.tsx                    # Scroll reveal + reduced-motion-aware props
+│   │   ├── motion-provider.tsx           # MotionConfig reducedMotion="user"
 │   │   └── page-transition.tsx           # Route-change wrapper
+│   ├── flagship-project.tsx              # Flagship panel: narrative, product still, evidence grid
+│   ├── evidence-stat.tsx                 # One figure + the population it was measured on
 │   ├── navigation.tsx                    # Top nav · IntersectionObserver active state · ⌘K hint · theme toggle
 │   ├── command-palette.tsx               # Global ⌘K palette (cmdk + portal) — Navigate · Links · Actions
 │   ├── theme-toggle.tsx                  # Sun ⇄ Moon button wired through next-themes
@@ -203,7 +204,8 @@ ai-engineer-portfolio/
 │   ├── skills.ts
 │   └── education.ts                      # Defined; not currently mounted in page.tsx
 ├── lib/
-│   └── utils.ts                          # cn() helper (clsx + tailwind-merge)
+│   ├── utils.ts                          # cn() helper (clsx + tailwind-merge)
+│   └── scroll.ts                         # scrollToSection(), reduced-motion aware
 ├── hooks/                                # Reusable React hooks (use-mounted.ts)
 ├── public/                               # Static assets (project SVGs, icons, robots.txt)
 ├── .github/workflows/ci.yml              # Lint · typecheck · build on push and pull request
@@ -301,8 +303,8 @@ The canonical site URL is defined once, as `SITE_URL` in `data/profile.ts`.
 - [x] **3C** — Hero and Navigation reworked to the new visual language
 - [x] **3D** — Section primitives updated (`section-wrapper`, `section-heading`, `project-card`)
 - [x] **3E** — First content pass against the résumé (superseded by the evidence pass, **6A**)
-- [ ] **3F** — Motion tuning pass (easing curves, stagger timings, hover affordances)
-- [ ] **3G** — Accessibility audit — contrast fixed in **6F**; focus rings on lavender and `prefers-reduced-motion` support across `globals.css` + framer-motion primitives still outstanding
+- [x] **3F** — Motion tuning pass (easing curves, stagger timings, hover affordances)
+- [x] **3G** — Accessibility audit — contrast fixed in **6F**, `prefers-reduced-motion` and tap-target sizing in **7E**
 
 ### Phase 4 — Interaction Layer
 
@@ -337,12 +339,22 @@ The canonical site URL is defined once, as `SITE_URL` in `data/profile.ts`.
 - [x] **6G** — Keep the separate `game/` app out of this build (TypeScript, ESLint, Tailwind source scan)
 - [x] **6H** — Remove 37 verified-unused dependencies and the 55 generated shadcn files nothing imports (kept `@radix-ui/react-dialog` and `@radix-ui/react-slot`, which `cmdk` needs at runtime, and `zod`, which the ESLint React-hooks plugin needs)
 
+### Phase 7 — Hierarchy and Proof
+
+- [x] **7A** — Homepage hierarchy: flagship panel, one secondary card, earlier and collaborative work as compact rows
+- [x] **7B** — Fraud Radar evidence panel: six figures, each carrying its evaluation population, plus the cross-generator transfer result stated plainly
+- [x] **7C** — Case studies use project-specific sections, with tables where results are tabular and a role label for shared work
+- [x] **7D** — Hero simplified: static headline, no decorative terminal panel, primary call to action on the flagship case study
+- [x] **7E** — Reduced motion across CSS, framer-motion and in-page scrolling; `noscript` content fallback; tap targets ≥ 24px; AA contrast for accent text via `--accent-ink`
+- [x] **7F** — Real product still from the live demo replaces the abstract flagship artwork
+- [ ] **7G** — Lighthouse and Core Web Vitals baseline captured after the hierarchy change
+
 ---
 
 ## 🎨 Engineering Decisions
 
 > **Why Next.js App Router over Pages Router?**
-> The App Router lets server components fetch GitHub data at the edge without ever shipping the API call to the browser, and `generateStaticParams` on `/projects/[slug]` gives us pre-rendered per-project pages with their own metadata for free. The Pages Router would have required `getStaticProps` boilerplate per route and would not have cleanly supported the server/client split for the GitHub Activity section.
+> `generateStaticParams` on `/projects/[slug]` gives pre-rendered per-project pages with their own metadata and share images for free, and the server/client split keeps data files out of the browser bundle where a section does not need them. The Pages Router would have required `getStaticProps` boilerplate per route.
 
 > **Why Tailwind v4 CSS-first instead of `tailwind.config.js`?**
 > Design tokens belong in CSS custom properties anyway — they need to flip with the theme, and they need to be inspectable in DevTools. v4's `@theme inline` block reads those properties and auto-generates utility classes from them, which collapses two sources of truth (config file + CSS variables) into one. There is no `tailwind.config.js` in this repo and there does not need to be.
@@ -365,7 +377,10 @@ The canonical site URL is defined once, as `SITE_URL` in `data/profile.ts`.
 
 | Surface                            | Status     | Notes                                                                  |
 | ---------------------------------- | ---------- | ---------------------------------------------------------------------- |
-| Home page (9 sections)             | ✅ Live    | Hero · About · Experience · Projects · Research · Tech Stack · GitHub · Contact · Footer |
+| Home page (7 sections)             | ✅ Live    | Hero · About · Work · Experience · Research · Stack · Contact (+ footer) |
+| Flagship hierarchy                 | ✅ Live    | Fraud Radar as a full-width panel with its evidence grid; one secondary card; earlier work as compact rows |
+| Evidence figures                   | ✅ Live    | `evidence[]` entries require a population, so every figure states what it was measured on |
+| Reduced motion + no-JS             | ✅ Live    | Entry animations dropped under `prefers-reduced-motion`; a `noscript` rule reveals content when JS is off |
 | 6 typed projects with case studies | ✅ Live    | Fraud Radar · Image Captioning · Plant Disease · Heart Disease · Unhosted · Diabetes Risk — project-specific sections, sources and a facts-checked date on each |
 | Project status badge               | ✅ Live    | `Live demo` / `Demo offline` / `Research stage` / `Earlier work` shown as a colored dot beside the period on each card |
 | Project artwork                    | ✅ Live    | Coral risk-gauge (Fraud Radar), lavender peer mesh (Unhosted), cyan image→caption scene (Image Captioning); the three earlier ML projects share a generic tile |
@@ -374,10 +389,8 @@ The canonical site URL is defined once, as `SITE_URL` in `data/profile.ts`.
 | Canonical URLs                     | ✅ Live    | Set per page from `SITE_URL`                                            |
 | Sitemap                            | ✅ Live    | Auto-iterates typed project list                                        |
 | JSON-LD structured data            | ✅ Live    | Person · Organization · ItemList · ScholarlyArticle                     |
-| GitHub Activity (ISR + fallback)   | ✅ Live    | `revalidate: 3600`, deterministic fallback list (refreshed to match real repos) |
 | Light / dark theme toggle          | ✅ Live    | `next-themes` class strategy, `dark` default, no system fallback        |
 | Global command palette (⌘K)        | ✅ Live    | `cmdk` + portal, three groups, focus restored on close, Esc/arrows/Enter |
-| Terminal hero card                 | ✅ Live    | Static mono panel + CSS cursor blink — replaces former portrait card    |
 | Evidence pass                      | ✅ Live    | Project claims checked against each repository and roles against the current CV (6A) |
 | CI gate                            | ✅ Live    | GitHub Actions: lint · typecheck · build on push and pull request       |
 | Security headers + CSP             | ✅ Live    | HSTS, frame, referrer and permissions headers; production CSP still allows `'unsafe-inline'` scripts (Next.js inline scripts without nonces); dev adds `unsafe-eval` |
