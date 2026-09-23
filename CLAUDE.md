@@ -73,7 +73,7 @@ There is no test suite configured. CI runs lint, typecheck and build (`.github/w
 - `tsconfig.json` excludes `resource/` (the Paperfolio inspiration template lives there but is not part of the app).
 - `game/` is a separate app with its own dependencies. It is excluded from `tsconfig.json`, ignored by ESLint, and kept out of Tailwind's source scan (`@source not "../game"` in `app/globals.css`), so it cannot break or bloat this build.
 - Tailwind **v4** is used in CSS-first mode (`@import 'tailwindcss'` in `app/globals.css`). There is no `tailwind.config.js` — design tokens are CSS custom properties in `:root` (dark canvas) and `.light` (inverted) blocks in `globals.css`. **Tailwind v4 auto-generates utilities from any `--color-*` declared in the `@theme inline` block**, which is how `bg-background`, `text-foreground`, `border-border`, etc. resolve.
-- `components.json` declares shadcn config: `style: new-york`, `baseColor: neutral`, `iconLibrary: lucide`, `rsc: true`. Add new primitives via `npx shadcn@latest add <name>` rather than hand-writing them under `components/ui/`.
+- `components.json` is a leftover shadcn config. There is no `components/ui/` directory — it was deleted with the unused dependencies — so treat shadcn as *not* in use. Running `npx shadcn@latest add <name>` would reinstall `@radix-ui/*` packages the site does not import; build primitives from the `.linear-*` / `.btn-*` classes instead.
 - Path alias: `@/*` resolves to the repo root (see `tsconfig.json`).
 - TS is `strict: true` with `target: ES6`, `moduleResolution: bundler`.
 - Canonical site URL is `https://ai-engineer-portfolio-pi.vercel.app`, defined once as `SITE_URL` in `data/profile.ts`. `app/layout.tsx` (`metadataBase`), `app/sitemap.ts`, `components/structured-data.tsx` and both OG images read it from there.
@@ -148,7 +148,8 @@ This is a Next.js 16 App Router portfolio site (React 19, framer-motion, next-th
 - `components/evidence-stat.tsx` — one measured figure. `population` is required by the type, so a bare number cannot reach the page.
 - `components/motion/motion-provider.tsx` — `MotionConfig reducedMotion="user"`, mounted in the root layout.
 - `lib/scroll.ts` — `scrollToSection()`; jumps instead of gliding when the visitor prefers reduced motion (CSS `scroll-behavior` does not apply to `scrollIntoView`). Every in-page link goes through it.
-- `components/ui/*` — shadcn/ui primitives, added on demand with `npx shadcn@latest add <name>` (none are installed at present). Treat them as generated; consume via `cn()` from `@/lib/utils`.
+- `components/skip-link.tsx` — the first focusable element on every page; jumps to `#main-content`, which every `<main>` carries.
+- `components/project-structured-data.tsx` — per-project JSON-LD (`SoftwareSourceCode` + `BreadcrumbList`) rendered by the case-study route. Its `@id` matches the site-wide `ItemList` entry so the two graphs merge.
 - `components/structured-data.tsx` — JSON-LD (Person, Organization, ItemList of projects, ScholarlyArticle per paper with every author), built from `data/profile.ts`, `data/projects.ts` and `data/research.ts`.
 
 ### Content / data layer

@@ -28,7 +28,7 @@
 
 ## Status
 
-> 🟢 **Live and deploying from `main`.** The site is shipped on Vercel and rebuilds on every push. Phases 1–5 built the App Router scaffold, typed content, all home-page sections, statically-generated case studies, ISR-driven GitHub activity, JSON-LD, OG images, the **Linear-inspired** visual system captured in [`DESIGN.md`](DESIGN.md), the terminal hero card, the ⌘K command palette and the theme toggle. **Phase 6 — Evidence pass** re-checked every project claim against its repository and every role against the current CV, credited collaborators, replaced the fixed case-study template with project-specific sections and sources, moved identity into a single `data/profile.ts`, added canonical URLs and per-project share images, fixed text contrast, and added a CI gate. **Phase 7 — Hierarchy and proof** made Fraud Radar the flagship with an evidence panel on the homepage, demoted the rest into secondary and earlier tiers, added tables and figures to the case studies, simplified the hero, and finished reduced-motion, no-JS and tap-target support.
+> 🟢 **Live and deploying from `main`.** The site is shipped on Vercel and rebuilds on every push. Phases 1–5 built the App Router scaffold, typed content, all home-page sections, statically-generated case studies, JSON-LD, OG images, the **Linear-inspired** visual system captured in [`DESIGN.md`](DESIGN.md), the ⌘K command palette and the theme toggle. **Phase 6 — Evidence pass** re-checked every project claim against its repository and every role against the current CV, credited collaborators, replaced the fixed case-study template with project-specific sections and sources, moved identity into a single `data/profile.ts`, added canonical URLs and per-project share images, fixed text contrast, and added a CI gate. **Phase 7 — Hierarchy and proof** made Fraud Radar the flagship with an evidence panel on the homepage, demoted the rest into secondary and earlier tiers, added tables and figures to the case studies, simplified the hero, and finished reduced-motion, no-JS and tap-target support.
 
 > 📐 **Why this exists.** A portfolio for an AI engineer should *look like* engineering: typed data, statically-generated routes, structured metadata, an actual design system. The site is the deliverable, but the repo is the demonstration.
 
@@ -114,8 +114,6 @@ This project is the answer to both:
 
 **Why a single-scrolling page with per-project detail routes?** Recruiters skim, deep readers click. The scroll-page hits the recruiter case; the statically-generated `/projects/[slug]` routes hit the deep-reader case and earn their own indexable URLs. Two surfaces, one data layer.
 
-**Why server components for GitHub activity?** Fetching at the edge with ISR gives us a fresh repo list every hour without exposing API rate limits to the browser, and the deterministic fallback list means the section degrades gracefully when GitHub is rate-limiting or unreachable.
-
 **Why typed `data/*.ts` instead of MDX or a CMS?** A portfolio that lives in version control is a portfolio that survives. Every content edit is a reviewable diff, every project change rebuilds the sitemap and OG tags automatically, and there is no third-party content service to outlive.
 
 ---
@@ -136,7 +134,7 @@ Page → Section → Reveal-wrapped card grid → Themed primitive
 - **Tokens-first.** All colors, type sizes, and radii are CSS custom properties — Tailwind v4 auto-generates utility classes from `@theme inline`, so `bg-background`, `text-foreground`, and `border-border` are real classes without a `tailwind.config.js`.
 - **One design language, dark-first.** The site runs on a Linear-inspired dark canvas (`#010102`) with a single lavender accent (`#5e6ad2`), a four-step surface ladder, and hairline borders. Light mode is the same system inverted onto `#ffffff`. The earlier Paperfolio neo-brutalist primitives (`.brutal-card`, `.brutal-shadow`, `.btn-brutal`, `.highlight-*`) still resolve as **backwards-compatibility aliases** mapped onto the Linear tokens — they are kept so legacy components compile, not because two languages coexist. New code should use the `.linear-card*` and `.btn-{primary,secondary,tertiary}` primitives.
 - **One motion vocabulary.** `Reveal` is the only scroll-triggered fade-up used in the codebase; `PageTransition` wraps route changes. No per-section bespoke animations.
-- **Known gap.** `prefers-reduced-motion` is not yet honored — there is no global media-query reset and the framer-motion primitives do not consult `useReducedMotion()`. Tracked as roadmap **3G**.
+- **Reduced motion is honored.** `globals.css` carries a `@media (prefers-reduced-motion: reduce)` reset, the `components/motion/*` primitives return explicit visible values instead of animating, and `lib/scroll.ts` jumps rather than glides.
 
 ---
 
